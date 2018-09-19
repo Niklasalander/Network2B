@@ -35,7 +35,7 @@ public class Client {
            System.out.println("6. Unlock the door.");
            System.out.println("0. I wanna go home."); 
            choice = scan.nextInt();
-           switch(choice)
+         /*  switch(choice)
            {
                case 1: dh.processNextEvent(DoorHandler.DoorEvent.CLOSE_BUTTON); break;
                case 2: dh.processNextEvent(DoorHandler.DoorEvent.OPEN_BUTTON); break;
@@ -43,7 +43,7 @@ public class Client {
                case 4: dh.processNextEvent(DoorHandler.DoorEvent.OBSTACLE_ENCOUNTERED);break;   
                case 5: dh.processNextEvent(DoorHandler.DoorEvent.LOCK);break;
                case 6: dh.processNextEvent(DoorHandler.DoorEvent.UNLOCK);break;
-           }
+           }*/
            System.out.println("");
         }while(choice != 0);
     }

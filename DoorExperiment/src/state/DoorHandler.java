@@ -27,5 +27,15 @@ public class DoorHandler{
     }
     private DoorState currentState;
     public void printState() { currentState.printState();
+
+    /**
+     *
+     * @return
+     */
+    
 }
+    
+    public String returnStates(){
+        return currentState.getClass().getSimpleName();
+    }
 }
