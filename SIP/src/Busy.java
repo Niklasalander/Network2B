@@ -1,3 +1,7 @@
+
+import java.io.PrintWriter;
+import java.net.Socket;
+
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
@@ -9,8 +13,13 @@
  * @author fno
  */
 public abstract class Busy extends SIPState{
+    public Busy(){};
+    public Busy(PrintWriter out) {
+        super(out);
+    }
+    
      public SIPState inviting(){
-         System.out.println("this node is busy, can't invited");
+         System.out.println("this node is busy, can't invite");
          return this;
      }
      public SIPState invited(){
@@ -37,4 +46,5 @@ public abstract class Busy extends SIPState{
          System.out.println("this node is busy, can't receive BYE");
          return this;
      }
+    
 }
