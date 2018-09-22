@@ -29,7 +29,7 @@ public class NetworkServer {
             int port = 9912;
             if (args.length == 1) 
                 port = Integer.parseInt(args[0]);
-            System.out.println("ort: " + port);
+            System.out.println("port: " + port);
             InetAddress addr = InetAddress.getByName("localhost");
             ServerSocket ss = new ServerSocket(port, 1, addr);
 //            SIPHandler dh = new SIPHandler();

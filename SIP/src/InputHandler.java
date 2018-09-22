@@ -3,6 +3,7 @@ import java.io.IOException;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.util.Arrays;
 import java.util.Scanner;
 
 /*
@@ -23,7 +24,7 @@ public class InputHandler extends Thread {
     
 
     public InputHandler() {
-        
+        //AudioStreamUDP u;
     }
     
     @Override 
@@ -35,12 +36,14 @@ public class InputHandler extends Thread {
         while (!command.equals(EXIT)) {
             try {
                 String input = sc.nextLine().trim().toUpperCase();
+                System.out.println("command " + input);
                 String[] received = input.split(" ");
                 command = received[0].trim().toUpperCase();
-
+                
                 switch(command) {
                     case EXIT : break;
                     case CALL : 
+                        System.out.println("PAYCHECK");
                         ipString = received[1].trim();
                         InetAddress ipAddress = InetAddress.getByName(ipString);
                         port = Integer.parseInt(received[2].trim());
