@@ -29,26 +29,7 @@ public class SIPHandler extends Thread {
     private static SIPState currentState = new Idle();
     private static PrintWriter out;
     public SIPHandler(){};
-//    public SIPHandler(Socket socket, SIPState currentState){
-//        this.socket = socket;
-////        sendAlive = new Timer();
-//        if (socket != null) {
-//            try {
-//                in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-//                out = new PrintWriter(new OutputStreamWriter(socket.getOutputStream()));
-//
-//            } catch (IOException ex) {
-//                try {
-//                    if (in != null)
-//                        in.close();
-//                    if (out != null)
-//                        out.close();
-//                } catch (IOException e) {
-//                }
-//                System.out.println("Could not establish connection to client");
-//            }
-//        }
-//    }
+
     
     public void reportCurrentState(){
         currentState.printState();
@@ -56,7 +37,24 @@ public class SIPHandler extends Thread {
     public String reportStates(){
         return currentState.returnStates();
     }
+     public static void processNextEvent (SIPEvent event, PrintWriter out, int portNumber) {
+         System.out.println("The right one " + event + portNumber);
+        if (currentState == null)
+            System.out.println("currentState IS NULL!!!!");
+        switch(event){
+            case SEND_INVITE : currentState= currentState.inviting(out);break; // caller
+            case INVITE : currentState= currentState.invited(out,portNumber);break; // callee
+            case TRO : currentState = currentState.gotTRO(out);break; // callee -> caller
+            case ACK : currentState = currentState.gotACK(out);break;// caller -> callee
+            case SEND_BYE : currentState = currentState.doBYE();break; // caller -> callee (caller wants to leave)
+            case BYE : currentState = currentState.gotBYE();break; //callee -> caller (wants to exit)
+            case OK  : currentState = currentState.gotOK();break; // callee -> caller 
+            // case BUSY : close socket and exit
+        }
+        System.out.print("Printing current state: ");currentState.printState();
+    }
     public static void processNextEvent (SIPEvent event, PrintWriter out) {
+        System.out.println("the wrong one " + event);
         if (currentState == null)
             System.out.println("currentState IS NULL!!!!");
         switch(event){
@@ -77,8 +75,24 @@ public class SIPHandler extends Thread {
             System.out.println("currentState IS NULL!!!!");
         switch(event){
             case SEND_INVITE : currentState= currentState.inviting(out);break; // caller
-            case INVITE : currentState= currentState.invited(out);break; // callee
+            case INVITE : currentState= currentState.invited(out);break;//currentState= currentState.invited(out);break; // callee
             case TRO : currentState = currentState.gotTRO(out);break; // callee -> caller
+            case ACK : currentState = currentState.gotACK(out);break;// caller -> callee
+            case SEND_BYE : currentState = currentState.doBYE();break; // caller -> callee (caller wants to leave)
+            case BYE : currentState = currentState.gotBYE();break; //callee -> caller (wants to exit)
+            case OK  : currentState = currentState.gotOK();break; // callee -> caller 
+            // case BUSY : close socket and exit
+        }
+        System.out.print("Printing current state: ");currentState.printState();
+    }
+    public static void processNextEvent (SIPEvent event, UserInfo u) {
+        System.out.println("new process events " + event);
+        if (currentState == null)
+            System.out.println("currentState IS NULL!!!!");
+        switch(event){
+            case SEND_INVITE : currentState= currentState.inviting(u);break; // caller
+            case INVITE : currentState= currentState.invited(u);break;//currentState= currentState.invited(out);break; // callee
+            case TRO : currentState = currentState.gotTRO(u);break; // callee -> caller
             case ACK : currentState = currentState.gotACK(out);break;// caller -> callee
             case SEND_BYE : currentState = currentState.doBYE();break; // caller -> callee (caller wants to leave)
             case BYE : currentState = currentState.gotBYE();break; //callee -> caller (wants to exit)
@@ -89,6 +103,7 @@ public class SIPHandler extends Thread {
     }
     
     
+    
     public static void startCall(InetAddress ipAddress, int port) {
         try {
             Socket socket = new Socket(ipAddress, port);
@@ -96,6 +111,7 @@ public class SIPHandler extends Thread {
             SocketReader sr = new SocketReader(socket, out);
             sr.start();
             processNextEvent(SIPEvent.SEND_INVITE, out);
+           
         } catch (IOException ex) {
             System.out.println("Could not create Printwriter out when creating call");
             ex.printStackTrace();

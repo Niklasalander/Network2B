@@ -21,15 +21,20 @@ public class InputHandler extends Thread {
     private static final String CALL = "CALL";
     private static final String ACCEPT = "ACCEPT";
     private static final String HANGUP = "HANGUP";
-    
-
+    private UserInfo u;
+    private UserInfo receiverInfo;
     public InputHandler() {
         //AudioStreamUDP u;
+    }
+    
+      public InputHandler(UserInfo userInfo) {
+       this.u = userInfo;
     }
     
     @Override 
     public void run() {
         Scanner sc = new Scanner(System.in);
+        System.out.println("now performing");
         String command = "";
         String ipString = "";
         int port;
@@ -43,18 +48,30 @@ public class InputHandler extends Thread {
                 switch(command) {
                     case EXIT : break;
                     case CALL : 
-                        System.out.println("PAYCHECK");
+                        System.out.println("Now doing call...");
                         ipString = received[1].trim();
                         InetAddress ipAddress = InetAddress.getByName(ipString);
                         port = Integer.parseInt(received[2].trim());
-                        SIPHandler.startCall(ipAddress, port);
+                        receiverInfo = new UserInfo(port,ipAddress);
+                        System.out.println("Attempted");
+                        //SIPHandler.startCall(ipAddress, port);
 //                        Socket socket = new Socket(ipAddress, port);
 //                        SocketReader sr = new SocketReader(socket);
-//                        sr.sendMessage(SIPEvent.SEND_INVITE);
+                        SIPHandler.processNextEvent(SIPEvent.SEND_INVITE,receiverInfo);
+                        //SocketReader sr = new SocketReader(receiverInfo.getSocket(), receiverInfo.getOut());
+                        SocketReader sr = new SocketReader(receiverInfo);
+                        sr.start();
+                         /**
+             *    Socket socket = new Socket(ipAddress, port);
+            out = new PrintWriter(new OutputStreamWriter(socket.getOutputStream()));
+            SocketReader sr = new SocketReader(socket, out);
+            sr.start();
+            processNextEvent(SIPEvent.SEND_INVITE, out);
+             */
 //                        sr.start();
                         break;
                     case ACCEPT : 
-                        //SEND TRO
+                         System.out.println("now in accept");
                         SIPHandler.processNextEvent(SIPEvent.SEND_TRO);
                         break;
                     case HANGUP : 
@@ -65,7 +82,10 @@ public class InputHandler extends Thread {
                         SIPHandler.sendInv();
                         break;
                     case "TRO" : 
+                        System.out.println("GOT TRO I THINK");
                         SIPHandler.processNextEvent(SIPEvent.TRO);
+                        break;
+                    case "NOW" : System.out.print(SIPHandler.getCurrentState());
                         break;
                     default : 
                         System.out.println("Not a valid command\n"

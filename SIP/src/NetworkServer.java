@@ -33,14 +33,15 @@ public class NetworkServer {
             InetAddress addr = InetAddress.getByName("localhost");
             ServerSocket ss = new ServerSocket(port, 1, addr);
 //            SIPHandler dh = new SIPHandler();
-            InputHandler ih = new InputHandler();
+            InputHandler ih = new InputHandler(new UserInfo(port,addr));
             ih.start();
             System.out.println("Server started... ");
             while (true) {
                 System.out.println("Waiting for connection...");
                 Socket s = ss.accept();
-                SocketReader sr = new SocketReader(s);
-                sr.acceptCall();
+                SocketReader sr = new SocketReader(s,port,addr);
+                //SocketReader sr = new SocketReader(s);
+               // sr.acceptCall();
                 sr.start();
                 
             }

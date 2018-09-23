@@ -30,6 +30,7 @@ import java.util.logging.Logger;
 /**
  *
  * @author fno
+ * B
  */
 public class Server {
     
@@ -37,44 +38,39 @@ public class Server {
      protected static PrintWriter out;
      public static void main(String[] args){
          try {
-             InetAddress addr = InetAddress.getByName("localhost");
-             ServerSocket ss = new ServerSocket(9912, 1, addr);
-            
-             Socket s = ss.accept();
-             SIPHandler dh = new SIPHandler();
-             System.out.println("Server started... ");
-             try {
-                in = new BufferedReader(new InputStreamReader(s.getInputStream()));
-                out = new PrintWriter(new OutputStreamWriter(s.getOutputStream()));
-
-            } catch (IOException ex) {
-                try {
-                    if (in != null)
-                        in.close();
-                    if (out != null)
-                        out.close();
-                } catch (IOException e) {
-                }
-                System.out.println("Could not establish connection to client");
+            int port = 9912;
+            if (args.length == 1) 
+                port = Integer.parseInt(args[0]);
+            System.out.println("port: " + port);
+            InetAddress addr = InetAddress.getByName("localhost");
+            ServerSocket ss = new ServerSocket(port, 1, addr);
+//            SIPHandler dh = new SIPHandler();
+           // InputHandler ih = new InputHandler();
+           // ih.start();
+            System.out.println("Server started... ");
+            while (true) {
+                System.out.println("Waiting for connection...");
+                Socket s = ss.accept();
+                SocketReader sr = new SocketReader(s);
+               // sr.acceptCall();
+                sr.start();
+                
             }
-             while(true){
-                 Integer choice = Integer.parseInt(in.readLine());
-//           switch(choice){
-//                case 1 : dh.processNextEvent(SIPEvent.SEND_INVITE);break;
-//                case 2 : dh.processNextEvent(SIPEvent.INVITE);break;
-//                case 3 : dh.processNextEvent(SIPEvent.TRO);break;
-//                case 4 : dh.processNextEvent(SIPEvent.ACK);break;
-//                case 5 : dh.processNextEvent(SIPEvent.SEND_BYE);break;
-//                case 6 : dh.processNextEvent(SIPEvent.BYE);break;
-//                case 7 : dh.processNextEvent(SIPEvent.OK);break;
-//            }
-             String sendBack = dh.reportStates();
-             out.println(sendBack);
-             out.flush();
-             }
-         } catch (IOException ex) {
-             Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
-         }
+            /**
+             * while (true) {
+                Socket incoming = s.accept();
+                System.out.println("New Client connecting...");
+                BroadcastClientHandler newClient = new BroadcastClientHandler(incoming, i++);
+                activeClients.add(newClient);
+                System.out.println("So far " + activeClients.size() + " connected users");
+                newClient.start();
+            }
+             */
+            
+//           
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
      }
 }
 

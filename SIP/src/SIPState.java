@@ -31,6 +31,7 @@ public abstract class SIPState {
     }
     
     protected boolean isSameUser(PrintWriter otherOut) {
+        System.out.println("in isame " + otherOut==null);
         if (out.equals(otherOut)) {
             System.out.println("It is the same user");
             return true;
@@ -64,12 +65,24 @@ public abstract class SIPState {
     public SIPState inviting(PrintWriter out) {
         return this;
     }
+    public SIPState inviting(UserInfo u) {
+        return this;
+    }
 
     public SIPState invited(PrintWriter out) {
         return this;
     }
+     public SIPState invited(UserInfo u) {
+        return this;
+    }
+    public SIPState invited(PrintWriter out, int thisAudioPort){
+        return this;
+    }
 
     public SIPState gotTRO(PrintWriter out) {
+        return this;
+    }
+     public SIPState gotTRO(UserInfo u) {
         return this;
     }
 
@@ -100,6 +113,15 @@ public abstract class SIPState {
      
     protected void sendDataPrimary(SIPEvent event) {
         out.println(event);
+        out.flush();
+    }protected void sendDataAlt(SIPEvent event, UserInfo u) {
+        PrintWriter o = u.getOut();
+        o.println(event);
+        o.flush();
+    }
+    protected void sendDataTertiary(SIPEvent event, int port){
+        System.out.println("Sending tertiary");
+        out.println(event +","+ port);
         out.flush();
     }
     
