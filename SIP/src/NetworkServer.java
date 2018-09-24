@@ -39,41 +39,13 @@ public class NetworkServer {
             while (true) {
                 System.out.println("Waiting for connection...");
                 Socket s = ss.accept();
-                SocketReader sr = new SocketReader(s);
-                sr.acceptCall();
-                sr.start();
+//                SocketReader sr = new SocketReader(s);
+//                sr.acceptCall();
+//                sr.start();
+                SIPHandler.startCallCallee(s);
                 
             }
             
-//            while (true) {
-//                Integer choice = Integer.parseInt(in.readLine());
-//                switch (choice) {
-//                    case 1:
-//                        dh.processNextEvent(SIPEvent.SEND_INVITE);
-//                        break;
-//                    case 2:
-//                        dh.processNextEvent(SIPEvent.INVITE);
-//                        break;
-//                    case 3:
-//                        dh.processNextEvent(SIPEvent.TRO);
-//                        break;
-//                    case 4:
-//                        dh.processNextEvent(SIPEvent.ACK);
-//                        break;
-//                    case 5:
-//                        dh.processNextEvent(SIPEvent.SEND_BYE);
-//                        break;
-//                    case 6:
-//                        dh.processNextEvent(SIPEvent.BYE);
-//                        break;
-//                    case 7:
-//                        dh.processNextEvent(SIPEvent.OK);
-//                        break;
-//                }
-//                String sendBack = dh.reportStates();
-//                out.println(sendBack);
-//                out.flush();
-//            }
         } catch (IOException ex) {
             ex.printStackTrace();
         }

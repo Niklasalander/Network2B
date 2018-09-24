@@ -21,19 +21,28 @@ public class WasInvited extends Busy {
     }
 
     public SIPState gotACK(PrintWriter out) {
-        
         if (isSameUser(out)) {
             // Start audio stream
             System.out.println("Got ACK going to InCall... ");
             return new InCall(out);
         }
         else {
-            if (out != null) {
-                sendDataPrimary(SIPEvent.BUSY);
-            }
+            sendBusyAndCloseWriter(out);
             System.out.println("WasWaiting is Busy");
             return (this);
         }
+    }
+    
+    public SIPState sendTRO() {
+        sendDataPrimary(SIPEvent.TRO);
+        return this;
+    }
+    
+    public SIPState gotBUSY(PrintWriter out) {
+        if (out != null) {
+            out.close();
+        }
+        return new Idle();
     }
 
     public void printState() {

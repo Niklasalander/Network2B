@@ -34,7 +34,13 @@ public class IsInviting extends Busy {
             return (this);
 
         }
-
+    }
+    
+    public SIPState gotBUSY(PrintWriter out) {
+        if (out != null) {
+            out.close();
+        }
+        return new Idle();
     }
 
     public void printState() {

@@ -1,5 +1,7 @@
 
 import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
@@ -44,17 +46,17 @@ public class InputHandler extends Thread {
                         ipString = received[1].trim();
                         InetAddress ipAddress = InetAddress.getByName(ipString);
                         port = Integer.parseInt(received[2].trim());
-                        SIPHandler.startCall(ipAddress, port);
+                        SIPHandler.startCallCaller(ipAddress, port);
 //                        Socket socket = new Socket(ipAddress, port);
 //                        SocketReader sr = new SocketReader(socket);
 //                        sr.sendMessage(SIPEvent.SEND_INVITE);
 //                        sr.start();
                         break;
-                    case ACCEPT : 
+                    case "A" : 
                         //SEND TRO
                         SIPHandler.processNextEvent(SIPEvent.SEND_TRO);
                         break;
-                    case HANGUP : 
+                    case "H" : 
                         SIPHandler.processNextEvent(SIPEvent.SEND_BYE);
                         break;
                     case "INV" : 
@@ -64,6 +66,15 @@ public class InputHandler extends Thread {
                     case "TRO" : 
                         SIPHandler.processNextEvent(SIPEvent.TRO);
                         break;
+                    case "SENDOK" : 
+                        ipString = received[1].trim();
+                        ipAddress = InetAddress.getByName(ipString);
+                        port = Integer.parseInt(received[2].trim());
+                        Socket s = new Socket(ipAddress, port);
+                        PrintWriter out = new PrintWriter(new OutputStreamWriter(s.getOutputStream()));
+                        out.println(SIPEvent.OK);
+                        out.flush();
+                        break;
                     default : 
                         System.out.println("Not a valid command\n"
                         + "Use: CALL, ACCEPT, HANGUP and EXIT");
@@ -72,8 +83,9 @@ public class InputHandler extends Thread {
                 System.out.println("Cannot find host: " + ipString);
             } catch (Exception ex) {
                 System.out.println("could not create socket");
+                ex.printStackTrace();
             }
-        } 
+        }
     }
     
 }

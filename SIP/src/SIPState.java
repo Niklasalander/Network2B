@@ -15,13 +15,7 @@ import java.net.Socket;
  * @author fno
  */
 public abstract class SIPState {
-
-//    protected Socket socket;
-//    protected BufferedReader in;
     protected static PrintWriter out;
-//    protected ObjectOutputStream os;
-//    protected InetAddress otherIdAddress;
-//    protected int otherPort;
 
     public SIPState() {
     }
@@ -41,26 +35,6 @@ public abstract class SIPState {
         }
     }
     
-
-//    public SIPState(Socket socket, InetAddress otherIdAddress, int otherPort) {
-//        this.socket = socket;
-//        this.otherIdAddress = otherIdAddress;
-//        this.otherPort = otherPort;
-//    }
-    
-    public SIPState inviting(Socket socket) {
-        return this;
-    }
-    public SIPState invited(Socket socket) {
-        return this;
-    }
-    public SIPState gotTRO(Socket socket) {
-        return this;
-    }
-    public SIPState gotACK(Socket socket) {
-        return this;
-    }
-
     public SIPState inviting(PrintWriter out) {
         return this;
     }
@@ -77,7 +51,7 @@ public abstract class SIPState {
         return this;
     }
 
-    public SIPState gotOK() {
+    public SIPState gotOK(PrintWriter out) {
         return this;
     }
 
@@ -85,7 +59,13 @@ public abstract class SIPState {
         return this;
     }
 
-    public SIPState gotBYE() {
+    public SIPState gotBYE(PrintWriter out) {
+        System.out.println("in SIPState");
+        return this;
+    }
+    
+    public SIPState gotBUSY(PrintWriter out) {
+        System.out.println("in main SIPState");
         return this;
     }
 
@@ -99,12 +79,22 @@ public abstract class SIPState {
     }
      
     protected void sendDataPrimary(SIPEvent event) {
-        out.println(event);
-        out.flush();
+        if (out != null) {
+            out.println(event);
+            out.flush();
+        }
+        else {
+            System.out.println("There are no active connections");
+        }
     }
     
     protected void sendDataSecondary(Socket socket, SIPEvent event) {
         
+    }
+    
+    /*** confirmed ***/
+    public SIPState sendTRO() {
+        return this;
     }
     
 }

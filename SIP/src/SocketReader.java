@@ -79,7 +79,7 @@ public class SocketReader extends Thread {
         System.out.println("Message sent");
     }
     
-    public void acceptCall() {
+    public void acceptCall() {  
         SIPHandler.processNextEvent(SIPEvent.INVITE, out);
 //        if (out == null)
 //            return false;
@@ -121,7 +121,7 @@ public class SocketReader extends Thread {
                 System.out.println("Client handler run method");
             }  finally {
                 try {
-                    System.out.println("Removing client");
+                    System.out.println("Socket Reader closing");
                     if (socket != null) {
                         socket.close();
                     }
@@ -141,7 +141,7 @@ public class SocketReader extends Thread {
         }
         else {
             try {
-                System.out.println("Removing client");
+                System.out.println("Socket Reader is not starting");
                 if (socket != null) {
                     socket.close();
                 }
