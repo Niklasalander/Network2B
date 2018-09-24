@@ -24,9 +24,11 @@ public abstract class SIPState {
 //    protected int otherPort;
 
     public SIPState() {
+        System.out.println("Creating new SIP state without printwriter");
     }
 
     public SIPState(PrintWriter out) {
+        System.out.println("Creating new SIP state with printwriter");
         this.out = out;
     }
     

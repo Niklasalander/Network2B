@@ -22,10 +22,15 @@ public class SocketReader extends Thread {
     protected Socket socket;
     protected BufferedReader in;
     protected PrintWriter out;
-    
+    private User u;
     private boolean isConnected;
-    
+    public SocketReader(User user){
+        this.u = user;
+        isConnected = true;
+        System.out.println("Initiated");
+    }
     public SocketReader(Socket socket){
+        
         this.socket = socket;
 //        sendAlive = new Timer();
         if (socket != null) {
@@ -88,24 +93,26 @@ public class SocketReader extends Thread {
     
     @Override
     public void run() {
-        if (in != null && out != null) {
+        System.out.println("in run");
+        if (this.u.getIn() != null && this.u.getOut() != null) {
             String str = "";
             SIPEvent event;
+             System.out.println("in if");
             try {
-                while (out != null) {
+                while (this.u.getOut() != null) {
                     System.out.println("SR waiting for string...");
-                    str = in.readLine();
+                    str = u.getIn().readLine();
                     System.out.println("gotstr: " + str);
 //                    event = (SIPEvent) in.read();
                     switch(str) {
-                        case "SEND_INVITE" : SIPHandler.processNextEvent(SIPEvent.SEND_INVITE, out);break;
-                        case "INVITE" : SIPHandler.processNextEvent(SIPEvent.INVITE, out);break;
-                        case "TRO" : SIPHandler.processNextEvent(SIPEvent.TRO, out);break;
-                        case "ACK" : SIPHandler.processNextEvent(SIPEvent.ACK, out);break;
-                        case "SEND_BYE" : SIPHandler.processNextEvent(SIPEvent.SEND_BYE, out);break;
-                        case "BYE" : SIPHandler.processNextEvent(SIPEvent.BYE, out);break;
-                        case "OK" : SIPHandler.processNextEvent(SIPEvent.OK, out);break;
-                        case "BUSY" : SIPHandler.processNextEvent(SIPEvent.BUSY, out);break;
+                        case "SEND_INVITE" : SIPHandler.processNextEvent(SIPEvent.SEND_INVITE, u.getOut());break;
+                        case "INVITE" : SIPHandler.processNextEvent(SIPEvent.INVITE, u.getOut());break;
+                        case "TRO" : SIPHandler.processNextEvent(SIPEvent.TRO, u.getOut());break;
+                        case "ACK" : SIPHandler.processNextEvent(SIPEvent.ACK, u.getOut());break;
+                        case "SEND_BYE" : SIPHandler.processNextEvent(SIPEvent.SEND_BYE, u.getOut());break;
+                        case "BYE" : SIPHandler.processNextEvent(SIPEvent.BYE, u.getOut());break;
+                        case "OK" : SIPHandler.processNextEvent(SIPEvent.OK, u.getOut());break;
+                        case "BUSY" : SIPHandler.processNextEvent(SIPEvent.BUSY, u.getOut());break;
                         default :
                             // close connection
                     }

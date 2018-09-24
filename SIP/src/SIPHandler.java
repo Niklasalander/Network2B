@@ -29,26 +29,7 @@ public class SIPHandler extends Thread {
     private static SIPState currentState = new Idle();
     private static PrintWriter out;
     public SIPHandler(){};
-//    public SIPHandler(Socket socket, SIPState currentState){
-//        this.socket = socket;
-////        sendAlive = new Timer();
-//        if (socket != null) {
-//            try {
-//                in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-//                out = new PrintWriter(new OutputStreamWriter(socket.getOutputStream()));
-//
-//            } catch (IOException ex) {
-//                try {
-//                    if (in != null)
-//                        in.close();
-//                    if (out != null)
-//                        out.close();
-//                } catch (IOException e) {
-//                }
-//                System.out.println("Could not establish connection to client");
-//            }
-//        }
-//    }
+
     
     public void reportCurrentState(){
         currentState.printState();
@@ -59,6 +40,7 @@ public class SIPHandler extends Thread {
     public static void processNextEvent (SIPEvent event, PrintWriter out) {
         if (currentState == null)
             System.out.println("currentState IS NULL!!!!");
+        System.out.println("in next event " + currentState.returnStates());
         switch(event){
             case SEND_INVITE : currentState= currentState.inviting(out);break; // caller
             case INVITE : currentState= currentState.invited(out);break; // callee

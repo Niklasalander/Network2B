@@ -23,57 +23,60 @@ public class NetworkServer {
 
     protected static BufferedReader in;
     protected static PrintWriter out;
-
+    protected static User thisUser;
+    protected static User receiverUser;
+    protected static InputHandler inHandler;
+    protected static SocketReader sReader;
+    // THIS IS B
+    public static synchronized void beginSocketReader(Socket socketInstance){
+        try {
+            receiverUser = new User(new BufferedReader(new InputStreamReader(socketInstance.getInputStream())),new PrintWriter(new OutputStreamWriter(socketInstance.getOutputStream())));
+            beginSocketReader(receiverUser);
+            // SocketReader sr = new SocketReader();
+        } catch (IOException ex) {
+            Logger.getLogger(NetworkServer.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    // THIS IS A
+    public static synchronized void beginSocketReader(User user){
+       // SocketReader sr = new SocketReader();
+       sReader = new SocketReader(user);
+       sReader.start();
+    }
+    //THIS IS A
+     public static synchronized void initReceiver(User foreigner, Socket se){
+       
+       receiverUser = foreigner;
+        try {
+            receiverUser.setIn( new BufferedReader(new InputStreamReader(se.getInputStream())));
+            receiverUser.setOut(new PrintWriter(new OutputStreamWriter(se.getOutputStream())));
+        } catch (IOException ex) {
+            Logger.getLogger(NetworkServer.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
     public static void main(String[] args) {
         try {
             int port = 9912;
             if (args.length == 1) 
                 port = Integer.parseInt(args[0]);
-            System.out.println("ort: " + port);
+            System.out.println("port: " + port);
             InetAddress addr = InetAddress.getByName("localhost");
+            thisUser = new User(addr,port);
             ServerSocket ss = new ServerSocket(port, 1, addr);
 //            SIPHandler dh = new SIPHandler();
-            InputHandler ih = new InputHandler();
-            ih.start();
+            inHandler = new InputHandler();
+            inHandler.start();
             System.out.println("Server started... ");
             while (true) {
                 System.out.println("Waiting for connection...");
                 Socket s = ss.accept();
-                SocketReader sr = new SocketReader(s);
-                sr.acceptCall();
-                sr.start();
+                beginSocketReader(s);
                 
+              /*  sr.acceptCall();
+                sr.start(); */  
             }
             
-//            while (true) {
-//                Integer choice = Integer.parseInt(in.readLine());
-//                switch (choice) {
-//                    case 1:
-//                        dh.processNextEvent(SIPEvent.SEND_INVITE);
-//                        break;
-//                    case 2:
-//                        dh.processNextEvent(SIPEvent.INVITE);
-//                        break;
-//                    case 3:
-//                        dh.processNextEvent(SIPEvent.TRO);
-//                        break;
-//                    case 4:
-//                        dh.processNextEvent(SIPEvent.ACK);
-//                        break;
-//                    case 5:
-//                        dh.processNextEvent(SIPEvent.SEND_BYE);
-//                        break;
-//                    case 6:
-//                        dh.processNextEvent(SIPEvent.BYE);
-//                        break;
-//                    case 7:
-//                        dh.processNextEvent(SIPEvent.OK);
-//                        break;
-//                }
-//                String sendBack = dh.reportStates();
-//                out.println(sendBack);
-//                out.flush();
-//            }
+
         } catch (IOException ex) {
             ex.printStackTrace();
         }

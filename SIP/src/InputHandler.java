@@ -20,7 +20,8 @@ public class InputHandler extends Thread {
     private static final String CALL = "CALL";
     private static final String ACCEPT = "ACCEPT";
     private static final String HANGUP = "HANGUP";
-    
+    private User target;
+    private Socket s;
 
     public InputHandler() {
         
@@ -44,7 +45,12 @@ public class InputHandler extends Thread {
                         ipString = received[1].trim();
                         InetAddress ipAddress = InetAddress.getByName(ipString);
                         port = Integer.parseInt(received[2].trim());
-                        SIPHandler.startCall(ipAddress, port);
+                        this.target = new User(ipAddress,port); // to and from B
+                        NetworkServer.initReceiver(target,new Socket(ipAddress, port));
+                        NetworkServer.beginSocketReader(this.target);
+                        SIPHandler.processNextEvent(SIPEvent.SEND_INVITE,this.target.getOut());
+                        //host starts connection
+                       // SIPHandler.startCall(ipAddress, port);
 //                        Socket socket = new Socket(ipAddress, port);
 //                        SocketReader sr = new SocketReader(socket);
 //                        sr.sendMessage(SIPEvent.SEND_INVITE);
@@ -64,6 +70,7 @@ public class InputHandler extends Thread {
                     case "TRO" : 
                         SIPHandler.processNextEvent(SIPEvent.TRO);
                         break;
+                    case "NOW" : System.out.println(SIPHandler.getCurrentState()); 
                     default : 
                         System.out.println("Not a valid command\n"
                         + "Use: CALL, ACCEPT, HANGUP and EXIT");

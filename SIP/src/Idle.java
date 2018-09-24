@@ -23,7 +23,7 @@ import java.util.logging.Logger;
 public class Idle extends SIPState {
 
     public Idle() {
-
+        System.out.println("it's in idle");
     }
     
     public SIPState inviting(Socket socket) {

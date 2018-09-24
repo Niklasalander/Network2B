@@ -26,6 +26,11 @@ public abstract class Busy extends SIPState{
          System.out.println("this node is busy, can't be invited");
          return this;
      }
+     public SIPState invited(PrintWriter out){
+         System.out.println("this node is busy, can't be invited");
+         sendDataPrimary(SIPEvent.BUSY);
+         return this;
+     }
        public SIPState gotTRO(){
          System.out.println("this node is busy, can't receive T.R.O");
          return this;
