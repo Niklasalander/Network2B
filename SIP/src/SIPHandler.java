@@ -29,26 +29,7 @@ public class SIPHandler extends Thread {
     private static SIPState currentState = new Idle();
     private static PrintWriter out;
     public SIPHandler(){};
-//    public SIPHandler(Socket socket, SIPState currentState){
-//        this.socket = socket;
-////        sendAlive = new Timer();
-//        if (socket != null) {
-//            try {
-//                in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-//                out = new PrintWriter(new OutputStreamWriter(socket.getOutputStream()));
-//
-//            } catch (IOException ex) {
-//                try {
-//                    if (in != null)
-//                        in.close();
-//                    if (out != null)
-//                        out.close();
-//                } catch (IOException e) {
-//                }
-//                System.out.println("Could not establish connection to client");
-//            }
-//        }
-//    }
+
     
     public void reportCurrentState(){
         currentState.printState();
@@ -59,6 +40,7 @@ public class SIPHandler extends Thread {
     public static void processNextEvent (SIPEvent event, PrintWriter out) {
         if (currentState == null)
             System.out.println("currentState IS NULL!!!!");
+        System.out.println("in next event " + currentState.returnStates());
         switch(event){
             case SEND_INVITE : currentState= currentState.inviting(out);break; // caller
             case INVITE : currentState= currentState.invited(out);break; // callee
@@ -123,57 +105,5 @@ public class SIPHandler extends Thread {
         
     }
     
-//    @Override
-//    public void run() {
-//        if (in != null && out != null) {
-//            String str = "";
-//            SIPEvent event;
-//            try {
-//                while (true) {
-//                    str = in.readLine();
-//                    System.out.println("gotstr: " + str);
-////                    event = (SIPEvent) in.read();
-//                    switch(str) {
-//                        case "SEND_INVITE" : processNextEvent(SIPEvent.SEND_INVITE);break;
-//                        case "INVITE" : processNextEvent(SIPEvent.INVITE);break;
-//                        case "TRO" : processNextEvent(SIPEvent.TRO);break;
-//                        case "ACK" : processNextEvent(SIPEvent.ACK);break;
-//                        case "SEND_BYE" : processNextEvent(SIPEvent.SEND_BYE);break;
-//                        case "BYE" : processNextEvent(SIPEvent.BYE);break;
-//                        case "OK" : processNextEvent(SIPEvent.OK);break;
-//                        case "BUSY" : processNextEvent(SIPEvent.BUSY);break;
-//                        default :
-//                            // close connection
-//                    }
-//                }
-//
-//            } catch (SocketTimeoutException ex) {
-//                System.out.println("A client timed out");
-//            } catch (NullPointerException ex) {
-//                System.out.println("Connection with client abrupty lost");
-//            } catch (SocketException se) {
-//                System.out.println("Could not read from socket handeling client");
-//            } catch (IOException ex) {
-//                System.out.println("Client handler run method");
-//            } finally {
-//                try {
-//                    System.out.println("Removing client");
-//                    if (socket != null) {
-//                        socket.close();
-//                    }
-//                    if (in != null) {
-//                        in.close();
-//                    }
-//                    if (out != null) {
-//                        out.close();
-//                    }
-//                } catch (IOException ex) {
-//                    System.out.println("could not close in stream in client handler");
-//                } catch (java.util.ConcurrentModificationException ex) {
-//                    System.out.println("Too many clients disconnecting simutainiously causing concurrency issues, "
-//                            + "thread will close in a few minutes.");;
-//                }
-//            }
-//        }
-//    }
+
 }
