@@ -44,11 +44,6 @@ public abstract class SIPState {
     }
     
 
-//    public SIPState(Socket socket, InetAddress otherIdAddress, int otherPort) {
-//        this.socket = socket;
-//        this.otherIdAddress = otherIdAddress;
-//        this.otherPort = otherPort;
-//    }
     
     public SIPState inviting(Socket socket) {
         return this;
