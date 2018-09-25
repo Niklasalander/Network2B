@@ -36,9 +36,6 @@ public class Idle extends SIPState {
     public SIPState invited(PrintWriter out) {
         this.out = out;
         System.out.println("Incoming call, type accept to answer");
-//        SIPHandler.setOut(out);
-//        sendDataPrimary(SIPEvent.TRO);
-//        System.out.println("Received INVITE, sending TRO");
         return new WasInvited(out);
     }
 
