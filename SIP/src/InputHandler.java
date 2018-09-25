@@ -21,7 +21,6 @@ public class InputHandler extends Thread {
     private static final String ACCEPT = "ACCEPT";
     private static final String HANGUP = "HANGUP";
     private User target;
-    private Socket s;
 
     public InputHandler() {
         
@@ -49,24 +48,20 @@ public class InputHandler extends Thread {
                         NetworkServer.initReceiver(target,new Socket(ipAddress, port));
                         NetworkServer.beginSocketReader(this.target);
                         SIPHandler.processNextEvent(SIPEvent.SEND_INVITE,this.target.getOut());
-                        //host starts connection
-                       // SIPHandler.startCall(ipAddress, port);
-//                        Socket socket = new Socket(ipAddress, port);
-//                        SocketReader sr = new SocketReader(socket);
-//                        sr.sendMessage(SIPEvent.SEND_INVITE);
-//                        sr.start();
                         break;
                     case ACCEPT : 
                         //SEND TRO
-                        SIPHandler.processNextEvent(SIPEvent.SEND_TRO);
-                        break;
+                        SIPHandler.processNextEvent(SIPEvent.SEND_TRO);break;
+                    case "A" : SIPHandler.processNextEvent(SIPEvent.SEND_TRO);break;
                     case HANGUP : 
-                        SIPHandler.processNextEvent(SIPEvent.SEND_BYE);
-                        break;
+                        SIPHandler.processNextEvent(SIPEvent.SEND_BYE);break;
+                    case "H" : SIPHandler.processNextEvent(SIPEvent.SEND_BYE);break;
+                    /** For testing **/
                     case "INV" : 
                         System.out.println("sending more invites");
                         SIPHandler.sendInv();
                         break;
+                    /** For testing **/
                     case "TRO" : 
                         SIPHandler.processNextEvent(SIPEvent.TRO);
                         break;

@@ -23,22 +23,9 @@ import java.util.logging.Logger;
 public class Idle extends SIPState {
 
     public Idle() {
-        System.out.println("it's in idle");
+
     }
     
-    public SIPState inviting(Socket socket) {
-        try {
-            out = new PrintWriter(new ObjectOutputStream(socket.getOutputStream()));
-            System.out.println("Sending INVITE, waiting for TRO");
-            SIPHandler.acceptCall(socket);
-            sendDataPrimary(SIPEvent.INVITE);
-            return new IsInviting(out);
-        } catch (IOException ex) {
-            ex.printStackTrace();
-            return new Idle();
-        }
-    }
-
     public SIPState inviting(PrintWriter out) {
         this.out = out;
         sendDataPrimary(SIPEvent.INVITE);
@@ -46,24 +33,12 @@ public class Idle extends SIPState {
         return new IsInviting(out);
     }
     
-    public SIPState invited(Socket socket) {
-        try {
-            out = new PrintWriter(new ObjectOutputStream(socket.getOutputStream()));
-            System.out.println("Sending TRO waiting for ACK");
-            SIPHandler.acceptCall(socket);
-//            out.print(SIPEvent.TRO);
-            sendDataPrimary(SIPEvent.TRO);
-            return new WasInvited(out);
-        } catch (IOException ex) {
-            ex.printStackTrace();
-            return new Idle();
-        }
-    }
-
     public SIPState invited(PrintWriter out) {
         this.out = out;
-        sendDataPrimary(SIPEvent.TRO);
-        System.out.println("Received INVITE, sending TRO");
+        System.out.println("Incoming call, type accept to answer");
+//        SIPHandler.setOut(out);
+//        sendDataPrimary(SIPEvent.TRO);
+//        System.out.println("Received INVITE, sending TRO");
         return new WasInvited(out);
     }
 

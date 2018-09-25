@@ -26,15 +26,22 @@ public class IsInviting extends Busy {
             return new InCall(out);
         } 
         else {
-            if (out != null) {
-                System.out.println("Busy in IsInviting");
-                out.println(SIPEvent.BUSY);
-                out.flush();
-            }
+            sendBusyAndCloseWriter(out);
             return (this);
-
         }
-
+    }
+    
+    public SIPState gotBUSY(PrintWriter out) {
+        if (isSameUser(out)) {
+            if (out != null) {
+                out.close();
+            }
+            return new Idle();
+        }
+        else {
+            sendBusyAndCloseWriter(out);
+            return this;
+        }
     }
 
     public void printState() {

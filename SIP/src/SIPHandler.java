@@ -46,10 +46,9 @@ public class SIPHandler extends Thread {
             case INVITE : currentState= currentState.invited(out);break; // callee
             case TRO : currentState = currentState.gotTRO(out);break; // callee -> caller
             case ACK : currentState = currentState.gotACK(out);break;// caller -> callee
-            case SEND_BYE : currentState = currentState.doBYE();break; // caller -> callee (caller wants to leave)
-            case BYE : currentState = currentState.gotBYE();break; //callee -> caller (wants to exit)
-            case OK  : currentState = currentState.gotOK();break; // callee -> caller 
-            // case BUSY : close socket and exit
+            case BYE : currentState = currentState.gotBYE(out);break; //callee -> caller (wants to exit)
+            case OK  : currentState = currentState.gotOK(out);break; // callee -> caller 
+            case BUSY : currentState = currentState.gotBUSY(out);break;
         }
         System.out.print("Printing current state: ");currentState.printState();
     }
@@ -58,42 +57,36 @@ public class SIPHandler extends Thread {
         if (currentState == null)
             System.out.println("currentState IS NULL!!!!");
         switch(event){
-            case SEND_INVITE : currentState= currentState.inviting(out);break; // caller
-            case INVITE : currentState= currentState.invited(out);break; // callee
-            case TRO : currentState = currentState.gotTRO(out);break; // callee -> caller
-            case ACK : currentState = currentState.gotACK(out);break;// caller -> callee
-            case SEND_BYE : currentState = currentState.doBYE();break; // caller -> callee (caller wants to leave)
-            case BYE : currentState = currentState.gotBYE();break; //callee -> caller (wants to exit)
-            case OK  : currentState = currentState.gotOK();break; // callee -> caller 
-            // case BUSY : close socket and exit
+            case SEND_BYE : currentState = currentState.sendBYE();break; // caller -> callee (caller wants to leave)
+            case SEND_TRO : currentState = currentState.sendTRO();break;
         }
         System.out.print("Printing current state: ");currentState.printState();
     }
     
     
-    public static void startCall(InetAddress ipAddress, int port) {
-        try {
-            Socket socket = new Socket(ipAddress, port);
-            out = new PrintWriter(new OutputStreamWriter(socket.getOutputStream()));
-            SocketReader sr = new SocketReader(socket, out);
-            sr.start();
-            processNextEvent(SIPEvent.SEND_INVITE, out);
-        } catch (IOException ex) {
-            System.out.println("Could not create Printwriter out when creating call");
-            ex.printStackTrace();
-        }
-    }
+//    public static void startCall(InetAddress ipAddress, int port) {
+//        try {
+//            Socket socket = new Socket(ipAddress, port);
+//            out = new PrintWriter(new OutputStreamWriter(socket.getOutputStream()));
+//            SocketReader sr = new SocketReader(socket, out);
+//            sr.start();
+//            processNextEvent(SIPEvent.SEND_INVITE, out);
+//        } catch (IOException ex) {
+//            System.out.println("Could not create Printwriter out when creating call");
+//            ex.printStackTrace();
+//        }
+//    }
     
     
     
-    public static void acceptCall(Socket socket) {
-        try {
-            out = new PrintWriter(new OutputStreamWriter(socket.getOutputStream()));
-        } catch (IOException ex) {
-            System.out.println("Could not create Printwriter out when accepting call");
-            ex.printStackTrace();
-        }
-    }
+//    public static void acceptCall(Socket socket) {
+//        try {
+//            out = new PrintWriter(new OutputStreamWriter(socket.getOutputStream()));
+//        } catch (IOException ex) {
+//            System.out.println("Could not create Printwriter out when accepting call");
+//            ex.printStackTrace();
+//        }
+//    }
     
     public static SIPState getCurrentState() {
         return currentState;
