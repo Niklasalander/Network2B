@@ -15,31 +15,31 @@ public class IsInviting extends Busy {
     public IsInviting() {
     }
 
-    public IsInviting(PrintWriter out) {
-        super(out);
+    public IsInviting(User user) {
+        super(user);
     }
 
-    public SIPState gotTRO(PrintWriter out) {
-        if (isSameUser(out)) {
+    public SIPState gotTRO(User user) {
+        if (isSameUser(user)) {
             sendDataPrimary(SIPEvent.ACK);
             System.out.println("Got TRO now we send ACK...");
-            return new InCall(out);
+            return new InCall(user);
         } 
         else {
-            sendBusyAndCloseWriter(out);
+            sendBusyAndCloseWriter(user);
             return (this);
         }
     }
     
-    public SIPState gotBUSY(PrintWriter out) {
-        if (isSameUser(out)) {
-            if (out != null) {
-                out.close();
+    public SIPState gotBUSY(User user) {
+        if (isSameUser(user)) {
+            if (user != null) {
+                user.getOut().close();
             }
             return new Idle();
         }
         else {
-            sendBusyAndCloseWriter(out);
+            sendBusyAndCloseWriter(user);
             return this;
         }
     }

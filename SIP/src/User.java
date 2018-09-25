@@ -19,19 +19,25 @@ public class User {
     private int port;
     private BufferedReader in;
     private PrintWriter out;
+    private int id;
 
     public User(InetAddress addr, int port) {
        //To change body of generated methods, choose Tools | Templates.
        this.address = addr;
        this.port = port;
+       this.id = NetworkServer.getNewUserId();
     }
 
     public User(BufferedReader in, PrintWriter out) {
         this.in = in;
         this.out = out;
+        this.id = NetworkServer.getNewUserId();
+    }
+
+    public int getId() {
+        return id;
     }
     
-
     public BufferedReader getIn() {
         return in;
     }

@@ -14,8 +14,8 @@ import java.io.PrintWriter;
 public class InCall extends Busy {
     public InCall(){};
     
-    public InCall(PrintWriter out){
-        super(out);
+    public InCall(User user){
+        super(user);
     }
 
     
