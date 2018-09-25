@@ -7,6 +7,7 @@ import java.io.PrintWriter;
 import java.net.Socket;
 import java.net.SocketException;
 import java.net.SocketTimeoutException;
+import java.util.Timer;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -24,9 +25,11 @@ public class SocketReader extends Thread {
     protected PrintWriter out;
     private User u;
     private boolean isConnected;
+    private ResponsiveServerTimer timer;
     public SocketReader(User user){
         this.u = user;
         isConnected = true;
+        timer = new ResponsiveServerTimer(u);
         System.out.println("Initiated");
     }
     public SocketReader(Socket socket){

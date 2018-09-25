@@ -1,5 +1,7 @@
 
 import java.io.PrintWriter;
+import java.util.Timer;
+import java.util.TimerTask;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -11,9 +13,11 @@ import java.io.PrintWriter;
  * @author fno
  */
 public class WasInvited extends Busy {
-
+    //Some timer class
+    //when timer
+    Timer timer;
     public WasInvited() {
-
+         
     }
 
     public WasInvited(PrintWriter out) {
