@@ -16,12 +16,7 @@ import java.net.Socket;
  */
 public abstract class SIPState {
 
-//    protected Socket socket;
-//    protected BufferedReader in;
     protected static PrintWriter out;
-//    protected ObjectOutputStream os;
-//    protected InetAddress otherIdAddress;
-//    protected int otherPort;
 
     public SIPState() {
         System.out.println("Creating new SIP state without printwriter");
@@ -43,21 +38,6 @@ public abstract class SIPState {
         }
     }
     
-
-    
-    public SIPState inviting(Socket socket) {
-        return this;
-    }
-    public SIPState invited(Socket socket) {
-        return this;
-    }
-    public SIPState gotTRO(Socket socket) {
-        return this;
-    }
-    public SIPState gotACK(Socket socket) {
-        return this;
-    }
-
     public SIPState inviting(PrintWriter out) {
         return this;
     }
@@ -74,15 +54,23 @@ public abstract class SIPState {
         return this;
     }
 
-    public SIPState gotOK() {
+    public SIPState gotOK(PrintWriter out) {
         return this;
     }
 
-    public SIPState doBYE() {
+    public SIPState gotBYE(PrintWriter out) {
         return this;
     }
-
-    public SIPState gotBYE() {
+    
+    public SIPState gotBUSY(PrintWriter out) {
+        return this;
+    }
+    
+    public SIPState sendBYE() {
+        return this;
+    }
+    
+    public SIPState sendTRO() {
         return this;
     }
 
@@ -99,9 +87,4 @@ public abstract class SIPState {
         out.println(event);
         out.flush();
     }
-    
-    protected void sendDataSecondary(Socket socket, SIPEvent event) {
-        
-    }
-    
 }

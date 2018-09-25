@@ -17,11 +17,6 @@ public class InCall extends Busy {
     public InCall(PrintWriter out){
         super(out);
     }
-    public SIPState doBYE(){
-        return new Exiting();
-    }
-    public SIPState gotBye(){
-        return new Idle();
-    }
+
     
 }
