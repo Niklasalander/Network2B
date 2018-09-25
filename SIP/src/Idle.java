@@ -26,20 +26,20 @@ public class Idle extends SIPState {
 
     }
     
-    public SIPState inviting(PrintWriter out) {
-        this.out = out;
+    public SIPState inviting(User user) {
+        this.user = user;
         sendDataPrimary(SIPEvent.INVITE);
         System.out.println("Sending INVITE, waiting for TRO");
-        return new IsInviting(out);
+        return new IsInviting(user);
     }
     
-    public SIPState invited(PrintWriter out) {
-        this.out = out;
+    public SIPState invited(User user) {
+        this.user = user;
         System.out.println("Incoming call, type accept to answer");
 //        SIPHandler.setOut(out);
 //        sendDataPrimary(SIPEvent.TRO);
 //        System.out.println("Received INVITE, sending TRO");
-        return new WasInvited(out);
+        return new WasInvited(user);
     }
 
     public void printState() {

@@ -20,6 +20,7 @@ public class InputHandler extends Thread {
     private static final String CALL = "CALL";
     private static final String ACCEPT = "ACCEPT";
     private static final String HANGUP = "HANGUP";
+//    private static int idProvider = 0;
     private User target;
 
     public InputHandler() {
@@ -44,10 +45,10 @@ public class InputHandler extends Thread {
                         ipString = received[1].trim();
                         InetAddress ipAddress = InetAddress.getByName(ipString);
                         port = Integer.parseInt(received[2].trim());
-                        this.target = new User(ipAddress,port); // to and from B
+                        this.target = new User(ipAddress, port); // to and from B
                         NetworkServer.initReceiver(target,new Socket(ipAddress, port));
                         NetworkServer.beginSocketReader(this.target);
-                        SIPHandler.processNextEvent(SIPEvent.SEND_INVITE,this.target.getOut());
+                        SIPHandler.processNextEvent(SIPEvent.SEND_INVITE, this.target);
                         break;
                     case ACCEPT : 
                         //SEND TRO

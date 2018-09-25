@@ -16,22 +16,20 @@ public class WasInvited extends Busy {
 
     }
 
-    public WasInvited(PrintWriter out) {
-        super(out);
+    public WasInvited(User user) {
+        super(user);
     }
 
-    public SIPState gotACK(PrintWriter out) {
-        if (isSameUser(out)) {
+    public SIPState gotACK(User user) {
+        if (isSameUser(user)) {
             // Start audio stream
             System.out.println("Got ACK going to InCall... ");
-            return new InCall(out);
+            return new InCall(user);
         }
         else {
-            if (out != null) {
+            if (user != null) {
                 System.out.println("Busy in IsInviting");
-                out.println(SIPEvent.BUSY);
-                out.flush();
-                // close out(?)
+                sendBusyAndCloseWriter(user);
             }
             return (this);
         }
@@ -42,15 +40,15 @@ public class WasInvited extends Busy {
         return this;
     }
     
-    public SIPState gotBUSY(PrintWriter out) {
-        if (isSameUser(out)) {
-            if (out != null) {
-                out.close();
+    public SIPState gotBUSY(User user) {
+        if (isSameUser(user)) {
+            if (user.getOut() != null) {
+                user.getOut().close();
             }
             return new Idle();
         }
         else {
-            sendBusyAndCloseWriter(out);
+            sendBusyAndCloseWriter(user);
             return this;
         }
     }

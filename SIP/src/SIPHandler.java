@@ -1,15 +1,5 @@
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
-import java.net.InetAddress;
-import java.net.Socket;
-import java.net.SocketException;
-import java.net.SocketTimeoutException;
-import java.util.Timer;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -37,18 +27,18 @@ public class SIPHandler extends Thread {
     public String reportStates(){
         return currentState.returnStates();
     }
-    public static void processNextEvent (SIPEvent event, PrintWriter out) {
+    public static void processNextEvent (SIPEvent event, User user) {
         if (currentState == null)
             System.out.println("currentState IS NULL!!!!");
         System.out.println("in next event " + currentState.returnStates());
         switch(event){
-            case SEND_INVITE : currentState= currentState.inviting(out);break; // caller
-            case INVITE : currentState= currentState.invited(out);break; // callee
-            case TRO : currentState = currentState.gotTRO(out);break; // callee -> caller
-            case ACK : currentState = currentState.gotACK(out);break;// caller -> callee
-            case BYE : currentState = currentState.gotBYE(out);break; //callee -> caller (wants to exit)
-            case OK  : currentState = currentState.gotOK(out);break; // callee -> caller 
-            case BUSY : currentState = currentState.gotBUSY(out);break;
+            case SEND_INVITE : currentState= currentState.inviting(user);break; // caller
+            case INVITE : currentState= currentState.invited(user);break; // callee
+            case TRO : currentState = currentState.gotTRO(user);break; // callee -> caller
+            case ACK : currentState = currentState.gotACK(user);break;// caller -> callee
+            case BYE : currentState = currentState.gotBYE(user);break; //callee -> caller (wants to exit)
+            case OK  : currentState = currentState.gotOK(user);break; // callee -> caller 
+            case BUSY : currentState = currentState.gotBUSY(user);break;
         }
         System.out.print("Printing current state: ");currentState.printState();
     }
@@ -88,8 +78,8 @@ public class SIPHandler extends Thread {
 //        }
 //    }
     
-    public static SIPState getCurrentState() {
-        return currentState;
+    public static String getCurrentState() {
+        return currentState.getClass().getSimpleName();
     }
     
     public static void sendInv() {
@@ -98,5 +88,4 @@ public class SIPHandler extends Thread {
         
     }
     
-
 }

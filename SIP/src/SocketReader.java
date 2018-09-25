@@ -84,13 +84,6 @@ public class SocketReader extends Thread {
         System.out.println("Message sent");
     }
     
-    public void acceptCall() {
-        SIPHandler.processNextEvent(SIPEvent.INVITE, out);
-//        if (out == null)
-//            return false;
-//        return true;
-    }
-    
     @Override
     public void run() {
         System.out.println("in run");
@@ -105,14 +98,13 @@ public class SocketReader extends Thread {
                     System.out.println("gotstr: " + str);
 //                    event = (SIPEvent) in.read();
                     switch(str) {
-                        case "SEND_INVITE" : SIPHandler.processNextEvent(SIPEvent.SEND_INVITE, u.getOut());break;
-                        case "INVITE" : SIPHandler.processNextEvent(SIPEvent.INVITE, u.getOut());break;
-                        case "TRO" : SIPHandler.processNextEvent(SIPEvent.TRO, u.getOut());break;
-                        case "ACK" : SIPHandler.processNextEvent(SIPEvent.ACK, u.getOut());break;
-                        case "SEND_BYE" : SIPHandler.processNextEvent(SIPEvent.SEND_BYE, u.getOut());break;
-                        case "BYE" : SIPHandler.processNextEvent(SIPEvent.BYE, u.getOut());break;
-                        case "OK" : SIPHandler.processNextEvent(SIPEvent.OK, u.getOut());break;
-                        case "BUSY" : SIPHandler.processNextEvent(SIPEvent.BUSY, u.getOut());break;
+                        case "SEND_INVITE" : SIPHandler.processNextEvent(SIPEvent.SEND_INVITE, u);break;
+                        case "INVITE" : SIPHandler.processNextEvent(SIPEvent.INVITE, u);break;
+                        case "TRO" : SIPHandler.processNextEvent(SIPEvent.TRO, u);break;
+                        case "ACK" : SIPHandler.processNextEvent(SIPEvent.ACK, u);break;
+                        case "BYE" : SIPHandler.processNextEvent(SIPEvent.BYE, u);break;
+                        case "OK" : SIPHandler.processNextEvent(SIPEvent.OK, u);break;
+                        case "BUSY" : SIPHandler.processNextEvent(SIPEvent.BUSY, u);break;
                         default :
                             // close connection
                     }

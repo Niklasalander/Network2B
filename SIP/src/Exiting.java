@@ -17,19 +17,19 @@ public class Exiting extends Busy{
         
     }
     
-    public Exiting(PrintWriter out) {
-        super(out);
+    public Exiting(User user) {
+        super(user);
     }
     
-    public SIPState gotOK(PrintWriter out) {
-        if (isSameUser(out)) {
+    public SIPState gotOK(User user) {
+        if (isSameUser(user)) {
             //clean up
-            if (out != null)
-                out.close();
+            if (user.getOut() != null)
+                user.getOut().close();
             return new Idle();
         }
         else {
-            sendBusyAndCloseWriter(out);
+            sendBusyAndCloseWriter(user);
             return this;
         }
         

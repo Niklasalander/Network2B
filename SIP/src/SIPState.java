@@ -16,53 +16,42 @@ import java.net.Socket;
  */
 public abstract class SIPState {
 
-    protected static PrintWriter out;
+    protected static User user;
 
     public SIPState() {
-        System.out.println("Creating new SIP state without printwriter");
+        System.out.println("Creating new SIP state withuser printwriter");
     }
 
-    public SIPState(PrintWriter out) {
+    public SIPState(User user) {
         System.out.println("Creating new SIP state with printwriter");
-        this.out = out;
+        this.user = user;
     }
     
-    protected boolean isSameUser(PrintWriter otherOut) {
-        if (out.equals(otherOut)) {
-            System.out.println("It is the same user");
-            return true;
-        }
-        else {
-            System.out.println("Not the same user");
-            return false;
-        }
-    }
-    
-    public SIPState inviting(PrintWriter out) {
+    public SIPState inviting(User user) {
         return this;
     }
 
-    public SIPState invited(PrintWriter out) {
+    public SIPState invited(User user) {
         return this;
     }
 
-    public SIPState gotTRO(PrintWriter out) {
+    public SIPState gotTRO(User user) {
         return this;
     }
 
-    public SIPState gotACK(PrintWriter out) {
+    public SIPState gotACK(User user) {
         return this;
     }
 
-    public SIPState gotOK(PrintWriter out) {
+    public SIPState gotOK(User user) {
         return this;
     }
 
-    public SIPState gotBYE(PrintWriter out) {
+    public SIPState gotBYE(User user) {
         return this;
     }
     
-    public SIPState gotBUSY(PrintWriter out) {
+    public SIPState gotBUSY(User user) {
         return this;
     }
     
@@ -83,8 +72,26 @@ public abstract class SIPState {
         return "current state : " + this.getClass().getSimpleName().toString();
     }
      
+    protected boolean isSameUser(User otherUser) {
+        System.out.println("This  user id: " + this.user.getId());
+        System.out.println("Other user id: " + otherUser.getId());
+        if (user.getId() == otherUser.getId()) {
+            System.out.println("It is the same user");
+            return true;
+        }
+        else {
+            System.out.println("Not the same user");
+            return false;
+        }
+    }
+     
     protected void sendDataPrimary(SIPEvent event) {
-        out.println(event);
-        out.flush();
+        try {
+            user.getOut().println(event);
+            user.getOut().flush();
+        } catch (Exception ex) {
+            System.out.println("SIPState could not send data");
+            ex.printStackTrace();
+        }
     }
 }
