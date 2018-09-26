@@ -58,6 +58,9 @@ public abstract class SIPState {
     public SIPState sendBYE() {
         return this;
     }
+     public SIPState sendBYE(User user) {
+        return this;
+    }
     
     public SIPState sendTRO() {
         return this;

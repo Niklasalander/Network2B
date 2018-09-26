@@ -30,7 +30,7 @@ public class SIPHandler extends Thread {
     public static void processNextEvent (SIPEvent event, User user) {
         if (currentState == null)
             System.out.println("currentState IS NULL!!!!");
-        System.out.println("in next event " + currentState.returnStates());
+        System.out.println("in next event " + currentState.returnStates() + " "  +event);
         switch(event){
             case SEND_INVITE : currentState= currentState.inviting(user);break; // caller
             case INVITE : currentState= currentState.invited(user);break; // callee
@@ -39,6 +39,7 @@ public class SIPHandler extends Thread {
             case BYE : currentState = currentState.gotBYE(user);break; //callee -> caller (wants to exit)
             case OK  : currentState = currentState.gotOK(user);break; // callee -> caller 
             case BUSY : currentState = currentState.gotBUSY(user);break;
+            case SEND_BUSY: currentState = currentState.sendBYE(user);break;
         }
         System.out.print("Printing current state: ");currentState.printState();
     }
@@ -54,29 +55,7 @@ public class SIPHandler extends Thread {
     }
     
     
-//    public static void startCall(InetAddress ipAddress, int port) {
-//        try {
-//            Socket socket = new Socket(ipAddress, port);
-//            out = new PrintWriter(new OutputStreamWriter(socket.getOutputStream()));
-//            SocketReader sr = new SocketReader(socket, out);
-//            sr.start();
-//            processNextEvent(SIPEvent.SEND_INVITE, out);
-//        } catch (IOException ex) {
-//            System.out.println("Could not create Printwriter out when creating call");
-//            ex.printStackTrace();
-//        }
-//    }
-    
-    
-    
-//    public static void acceptCall(Socket socket) {
-//        try {
-//            out = new PrintWriter(new OutputStreamWriter(socket.getOutputStream()));
-//        } catch (IOException ex) {
-//            System.out.println("Could not create Printwriter out when accepting call");
-//            ex.printStackTrace();
-//        }
-//    }
+
     
     public static String getCurrentState() {
         return currentState.getClass().getSimpleName();

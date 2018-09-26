@@ -19,8 +19,8 @@ public class ResponsiveServerTimer extends TimerTask{
     @Override
     public void run() {
         System.out.println("Timer ran out");
-       // throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
+        SIPHandler.processNextEvent(SIPEvent.SEND_BUSY,u);
+       }
     
     
 }

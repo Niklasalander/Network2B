@@ -7,6 +7,7 @@ import java.io.PrintWriter;
 import java.net.Socket;
 import java.net.SocketException;
 import java.net.SocketTimeoutException;
+import java.util.Timer;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -27,7 +28,7 @@ public class SocketReader extends Thread {
     public SocketReader(User user){
         this.u = user;
         isConnected = true;
-        System.out.println("Initiated");
+        System.out.println("Initiated"); 
     }
     public SocketReader(Socket socket){
         
@@ -99,7 +100,10 @@ public class SocketReader extends Thread {
 //                    event = (SIPEvent) in.read();
                     switch(str) {
                         case "SEND_INVITE" : SIPHandler.processNextEvent(SIPEvent.SEND_INVITE, u);break;
-                        case "INVITE" : SIPHandler.processNextEvent(SIPEvent.INVITE, u);break;
+                        case "INVITE" : 
+                            SIPHandler.processNextEvent(SIPEvent.INVITE, u);
+                           // rsTimer.schedule(new ResponsiveServerTimer(u), 5000);
+                        break;
                         case "TRO" : SIPHandler.processNextEvent(SIPEvent.TRO, u);break;
                         case "ACK" : SIPHandler.processNextEvent(SIPEvent.ACK, u);break;
                         case "BYE" : SIPHandler.processNextEvent(SIPEvent.BYE, u);break;

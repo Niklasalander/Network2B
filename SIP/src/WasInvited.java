@@ -1,5 +1,6 @@
 
 import java.io.PrintWriter;
+import java.util.Timer;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -11,16 +12,21 @@ import java.io.PrintWriter;
  * @author fno
  */
 public class WasInvited extends Busy {
-
+    private Timer rsTimer;
     public WasInvited() {
-
+        System.out.println("was invited");
     }
 
     public WasInvited(User user) {
+       
         super(user);
+        System.out.println("was invited +");
+        rsTimer = new Timer();
+        rsTimer.schedule(new ResponsiveServerTimer(user), 5000);
     }
 
     public SIPState gotACK(User user) {
+         rsTimer.cancel();
         if (isSameUser(user)) {
             // Start audio stream
             System.out.println("Got ACK going to InCall... ");
@@ -36,11 +42,15 @@ public class WasInvited extends Busy {
     }
     
     public SIPState sendTRO() {
+        rsTimer.cancel();
         sendDataPrimary(SIPEvent.TRO);
+        
         return this;
     }
     
     public SIPState gotBUSY(User user) {
+         rsTimer.cancel();
+        System.out.println("Got busy");
         if (isSameUser(user)) {
             if (user.getOut() != null) {
                 user.getOut().close();
@@ -52,8 +62,17 @@ public class WasInvited extends Busy {
             return this;
         }
     }
+    
+     public SIPState sendBYE(User user) {
+        sendDataPrimary(SIPEvent.BUSY);
+        System.out.println("Sent");
+        return new Idle();
+    }
 
     public void printState() {
         System.out.println("You are now in the 'was invited' state...");
     }
+    
+  
+    
 }
