@@ -21,7 +21,7 @@ public class IsInviting extends Busy {
 
     public SIPState gotTRO(User user) {
         if (isSameUser(user)) {
-            sendDataPrimary(SIPEvent.ACK);
+            sendDataWithInteger(SIPEvent.ACK,user.getRemotePortNumber());
             System.out.println("Got TRO now we send ACK...");
             return new InCall(user);
         } 
@@ -30,6 +30,15 @@ public class IsInviting extends Busy {
             return (this);
         }
     }
+    /**
+     *  public SIPState sendTRO(User user) {
+        rsTimer.cancel();
+        sendDataWithInteger(SIPEvent.TRO,user.getRemotePortNumber());
+        return this;
+    }
+     * @param user
+     * @return 
+     */
     
     public SIPState gotBUSY(User user) {
         if (isSameUser(user)) {

@@ -25,10 +25,12 @@ public class SocketReader extends Thread {
     protected PrintWriter out;
     private User u;
     private boolean isConnected;
+    private User thisUser;
     public SocketReader(User user){
         this.u = user;
         isConnected = true;
         System.out.println("Initiated"); 
+        this.thisUser = new User();
     }
     public SocketReader(Socket socket){
         
@@ -96,16 +98,28 @@ public class SocketReader extends Thread {
                 while (this.u.getOut() != null) {
                     System.out.println("SR waiting for string...");
                     str = u.getIn().readLine();
-                    System.out.println("gotstr: " + str);
-//                    event = (SIPEvent) in.read();
-                    switch(str) {
+                    String[] received = str.split(" ");
+                    String command = received[0].trim().toUpperCase();
+                    System.out.println("gotstr: " + str + " id " +u.getId() );
+//                   event = (SIPEvent) in.read();
+                    switch(command) {
                         case "SEND_INVITE" : SIPHandler.processNextEvent(SIPEvent.SEND_INVITE, u);break;
                         case "INVITE" : 
                             SIPHandler.processNextEvent(SIPEvent.INVITE, u);
-                           // rsTimer.schedule(new ResponsiveServerTimer(u), 5000);
+                            
                         break;
-                        case "TRO" : SIPHandler.processNextEvent(SIPEvent.TRO, u);break;
-                        case "ACK" : SIPHandler.processNextEvent(SIPEvent.ACK, u);break;
+                        case "TRO" : 
+                            this.thisUser.setRemotePortNumber(Integer.parseInt(received[1]));
+                            u.setRemotePortNumber(this.thisUser.getLocalPortNumber());
+                            System.out.println("remote port is " + this.thisUser.getLocalPortNumber() + " " + this.thisUser.getRemotePortNumber());
+                            u.setLocalUser(thisUser);
+                            SIPHandler.processNextEvent(SIPEvent.TRO,u);break;
+                            
+                        case "ACK" : 
+                            this.thisUser.setRemotePortNumber(Integer.parseInt(received[1]));
+                            System.out.println("this users remote port: " + this.thisUser.getRemotePortNumber());
+                            u.setLocalUser(thisUser);
+                            SIPHandler.processNextEvent(SIPEvent.ACK, u);break;
                         case "BYE" : SIPHandler.processNextEvent(SIPEvent.BYE, u);break;
                         case "OK" : SIPHandler.processNextEvent(SIPEvent.OK, u);break;
                         case "BUSY" : SIPHandler.processNextEvent(SIPEvent.BUSY, u);break;

@@ -22,9 +22,11 @@ public class InputHandler extends Thread {
     private static final String HANGUP = "HANGUP";
 //    private static int idProvider = 0;
     private User target;
-
+    private User thisOne;
     public InputHandler() {
-        
+         thisOne = new User();   
+         System.out.println("new this user created " + thisOne.getLocalPortNumber());
+         
     }
     
     @Override 
@@ -38,7 +40,7 @@ public class InputHandler extends Thread {
                 String input = sc.nextLine().trim().toUpperCase();
                 String[] received = input.split(" ");
                 command = received[0].trim().toUpperCase();
-
+                System.out.println("THIS USER " + thisOne.getLocalPortNumber());
                 switch(command) {
                     case EXIT : break;
                     case CALL : 
@@ -50,9 +52,16 @@ public class InputHandler extends Thread {
                         NetworkServer.beginSocketReader(this.target);
                         SIPHandler.processNextEvent(SIPEvent.SEND_INVITE, this.target);
                         break;
-                    case ACCEPT : 
-                        //SEND TRO
-                        SIPHandler.processNextEvent(SIPEvent.SEND_TRO);break;
+                    case ACCEPT : System.out.println("in accept");
+                       if(this.thisOne.getLocalPortNumber()!=0){
+                           System.out.println("condition accept");
+                           this.target = new User(this.thisOne.getLocalPortNumber());
+                           System.out.println("HERERE");
+                           SIPHandler.processNextEvent(SIPEvent.SEND_TRO,this.target);break;
+                    }
+                      //  System.out.println("Something went wrong");
+                   // break;
+                        //SEND TRO  
                     case "A" : SIPHandler.processNextEvent(SIPEvent.SEND_TRO);break;
                     case HANGUP : 
                         SIPHandler.processNextEvent(SIPEvent.SEND_BYE);break;
@@ -78,5 +87,12 @@ public class InputHandler extends Thread {
             }
         } 
     }
+    private boolean checkIfPortIsDigit(String portNumber){
+          if(portNumber.chars().allMatch(Character::isDigit)){
+              return true;
+          }
+          return false;
+       
+   }
     
 }

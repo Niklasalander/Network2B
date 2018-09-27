@@ -20,9 +20,9 @@ public class WasInvited extends Busy {
     public WasInvited(User user) {
        
         super(user);
-        System.out.println("was invited +");
+        
         rsTimer = new Timer();
-        rsTimer.schedule(new ResponsiveServerTimer(user), 5000);
+        rsTimer.schedule(new ResponsiveServerTimer(user), 10000);
     }
 
     public SIPState gotACK(User user) {
@@ -44,7 +44,11 @@ public class WasInvited extends Busy {
     public SIPState sendTRO() {
         rsTimer.cancel();
         sendDataPrimary(SIPEvent.TRO);
-        
+        return this;
+    }
+      public SIPState sendTRO(User user) {
+        rsTimer.cancel();
+        sendDataWithInteger(SIPEvent.TRO,user.getRemotePortNumber());
         return this;
     }
     

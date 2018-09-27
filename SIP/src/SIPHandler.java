@@ -40,6 +40,7 @@ public class SIPHandler extends Thread {
             case OK  : currentState = currentState.gotOK(user);break; // callee -> caller 
             case BUSY : currentState = currentState.gotBUSY(user);break;
             case SEND_BUSY: currentState = currentState.sendBYE(user);break;
+            case SEND_TRO : currentState = currentState.sendTRO(user);break;
         }
         System.out.print("Printing current state: ");currentState.printState();
     }
