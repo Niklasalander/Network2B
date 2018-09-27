@@ -30,7 +30,7 @@ public class NetworkServer {
     // THIS IS B
     public static synchronized void beginSocketReader(Socket socketInstance) {
         try {
-            User receiverUser = new User(new BufferedReader(new InputStreamReader(socketInstance.getInputStream())),
+            User receiverUser = new User(socketInstance, new BufferedReader(new InputStreamReader(socketInstance.getInputStream())),
                     new PrintWriter(new OutputStreamWriter(socketInstance.getOutputStream())));
             beginSocketReader(receiverUser);
         } catch (IOException ex) {
@@ -47,6 +47,7 @@ public class NetworkServer {
     //THIS IS A
     public static synchronized void initReceiver(User foreigner, Socket se) {
         try {
+            foreigner.setSocket(se);
             foreigner.setIn(new BufferedReader(new InputStreamReader(se.getInputStream())));
             foreigner.setOut(new PrintWriter(new OutputStreamWriter(se.getOutputStream())));
         } catch (IOException ex) {

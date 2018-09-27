@@ -27,7 +27,7 @@ public class SIPHandler extends Thread {
     public String reportStates(){
         return currentState.returnStates();
     }
-    public static void processNextEvent (SIPEvent event, User user) {
+    public static synchronized void processNextEvent (SIPEvent event, User user) {
         if (currentState == null)
             System.out.println("currentState IS NULL!!!!");
         System.out.println("in next event " + currentState.returnStates());
@@ -39,11 +39,12 @@ public class SIPHandler extends Thread {
             case BYE : currentState = currentState.gotBYE(user);break; //callee -> caller (wants to exit)
             case OK  : currentState = currentState.gotOK(user);break; // callee -> caller 
             case BUSY : currentState = currentState.gotBUSY(user);break;
+            case LOST_CONNECTION : currentState = currentState.lostConnection(user);break;
         }
         System.out.print("Printing current state: ");currentState.printState();
     }
     
-    public static void processNextEvent (SIPEvent event) {
+    public static synchronized void processNextEvent (SIPEvent event) {
         if (currentState == null)
             System.out.println("currentState IS NULL!!!!");
         switch(event){
@@ -54,29 +55,6 @@ public class SIPHandler extends Thread {
     }
     
     
-//    public static void startCall(InetAddress ipAddress, int port) {
-//        try {
-//            Socket socket = new Socket(ipAddress, port);
-//            out = new PrintWriter(new OutputStreamWriter(socket.getOutputStream()));
-//            SocketReader sr = new SocketReader(socket, out);
-//            sr.start();
-//            processNextEvent(SIPEvent.SEND_INVITE, out);
-//        } catch (IOException ex) {
-//            System.out.println("Could not create Printwriter out when creating call");
-//            ex.printStackTrace();
-//        }
-//    }
-    
-    
-    
-//    public static void acceptCall(Socket socket) {
-//        try {
-//            out = new PrintWriter(new OutputStreamWriter(socket.getOutputStream()));
-//        } catch (IOException ex) {
-//            System.out.println("Could not create Printwriter out when accepting call");
-//            ex.printStackTrace();
-//        }
-//    }
     
     public static String getCurrentState() {
         return currentState.getClass().getSimpleName();

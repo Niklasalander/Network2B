@@ -20,6 +20,12 @@ public class InputHandler extends Thread {
     private static final String CALL = "CALL";
     private static final String ACCEPT = "ACCEPT";
     private static final String HANGUP = "HANGUP";
+    
+    private static final String CURCON = "CURCON";
+    private static final String NEWCON = "NEWCON";
+    private static final String CALLE = "CALLE";
+    private static final String ACCEPTE = "ACCEPTE";
+    private static final String HANGUPE = "HANGUPE";
 //    private static int idProvider = 0;
     private User target;
 
@@ -42,21 +48,19 @@ public class InputHandler extends Thread {
                 switch(command) {
                     case EXIT : break;
                     case CALL : 
-                        ipString = received[1].trim();
-                        InetAddress ipAddress = InetAddress.getByName(ipString);
-                        port = Integer.parseInt(received[2].trim());
-                        this.target = new User(ipAddress, port); // to and from B
-                        NetworkServer.initReceiver(target,new Socket(ipAddress, port));
-                        NetworkServer.beginSocketReader(this.target);
+                        initSocket(received);
+//                        ipString = received[1].trim();
+//                        InetAddress ipAddress = InetAddress.getByName(ipString);
+//                        port = Integer.parseInt(received[2].trim());
+//                        this.target = new User(ipAddress, port); // to and from B
+//                        NetworkServer.initReceiver(target,new Socket(ipAddress, port));
+//                        NetworkServer.beginSocketReader(this.target);
                         SIPHandler.processNextEvent(SIPEvent.SEND_INVITE, this.target);
                         break;
-                    case ACCEPT : 
-                        //SEND TRO
-                        SIPHandler.processNextEvent(SIPEvent.SEND_TRO);break;
-                    case "A" : SIPHandler.processNextEvent(SIPEvent.SEND_TRO);break;
-                    case HANGUP : 
-                        SIPHandler.processNextEvent(SIPEvent.SEND_BYE);break;
-                    case "H" : SIPHandler.processNextEvent(SIPEvent.SEND_BYE);break;
+                    case ACCEPT : SIPHandler.processNextEvent(SIPEvent.SEND_TRO); break;
+                    case "A" : SIPHandler.processNextEvent(SIPEvent.SEND_TRO); break;
+                    case HANGUP : SIPHandler.processNextEvent(SIPEvent.SEND_BYE); break;
+                    case "H" : SIPHandler.processNextEvent(SIPEvent.SEND_BYE); break;
                     /** For testing **/
                     case "INV" : 
                         System.out.println("sending more invites");
@@ -66,17 +70,74 @@ public class InputHandler extends Thread {
                     case "TRO" : 
                         SIPHandler.processNextEvent(SIPEvent.TRO);
                         break;
-                    case "NOW" : System.out.println(SIPHandler.getCurrentState()); 
+                    case "NOW" : System.out.println("Now in state: " + SIPHandler.getCurrentState()); break;
+                    
+                    
+                    
+                    /*** Faulty commands ***/
+                    case CURCON : 
+                        String s = received[1].trim().toUpperCase();
+                        int iterations = 1;
+                        if (received.length > 2)
+                            iterations = Integer.parseInt(received[2].trim());
+                        for (int i = 0; i < iterations; i++) {
+                            this.target.getOut().println(s);
+                            this.target.getOut().flush();
+                        }
+                        break;
+                    
+                    case NEWCON : 
+                        initSocket(received);
+                        s = received[3].trim().toUpperCase();
+                        iterations = 1;
+                        if (received.length > 4)
+                            iterations = Integer.parseInt(received[4].trim());
+                        for (int i = 0; i < iterations; i++) {
+                            this.target.getOut().println(s);
+                            this.target.getOut().flush();
+                        }
+                        break;
+                        
+                    case CALLE : 
+                        initSocket(received);
+                        for (int i = 0; i < Integer.parseInt(received[3].trim()); i++)
+                            SIPHandler.processNextEvent(SIPEvent.SEND_INVITE, this.target);
+                        break;
+                    case ACCEPTE : 
+//                        initSocket(received);
+                        for (int i = 0; i < Integer.parseInt(received[1].trim()); i++)
+                            SIPHandler.processNextEvent(SIPEvent.SEND_TRO);
+                        break;
+                    case HANGUPE : 
+//                        initSocket(received);
+                        for (int i = 0; i < Integer.parseInt(received[1].trim()); i++)
+                            SIPHandler.processNextEvent(SIPEvent.SEND_BYE);
+                        break;
                     default : 
                         System.out.println("Not a valid command\n"
                         + "Use: CALL, ACCEPT, HANGUP and EXIT");
                 }
             } catch (UnknownHostException ex) {
                 System.out.println("Cannot find host: " + ipString);
-            } catch (Exception ex) {
-                System.out.println("could not create socket");
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            } catch (ArrayIndexOutOfBoundsException ex) {
+                System.out.println("Too few arguments");
+            } catch (NumberFormatException ex) {
+                System.out.println("Cannot convert letters to numbers");
+            } catch (NullPointerException ex) {
+                System.out.println("No connection exists");
             }
         } 
+    }
+    
+    private void initSocket(String[] received) throws UnknownHostException, IOException {
+        String ipString = received[1].trim();
+        InetAddress ipAddress = InetAddress.getByName(ipString);
+        int port = Integer.parseInt(received[2].trim());
+        this.target = new User(); // to and from B
+        NetworkServer.initReceiver(this.target, new Socket(ipAddress, port));
+        NetworkServer.beginSocketReader(this.target);
     }
     
 }

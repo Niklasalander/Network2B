@@ -55,6 +55,10 @@ public abstract class SIPState {
         return this;
     }
     
+    public SIPState lostConnection(User user) {
+        return this;
+    }
+    
     public SIPState sendBYE() {
         return this;
     }

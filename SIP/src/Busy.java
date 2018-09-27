@@ -23,6 +23,11 @@ public abstract class Busy extends SIPState {
 
     public SIPState inviting(User user) {
         System.out.println("Exit current call before starting a new one");
+        if (!isSameUser(user) && user.getOut() != null) {
+            user.getOut().println(SIPEvent.BYE);
+            user.getOut().flush();
+            user.getOut().close();
+        }
         return this;
     }
 
@@ -86,6 +91,19 @@ public abstract class Busy extends SIPState {
             System.out.println("Got BYE sending OK");
             sendDataPrimary(SIPEvent.OK);
             user.getOut().close();
+            // instead of closing out maybe add boolean isConnected?
+            return new Idle();
+        } else {
+            sendBusyAndCloseWriter(user);
+            return this;
+        }
+    }
+    
+    public SIPState lostConnection(User user) {
+        if (isSameUser(user)) {
+            System.out.println("Got LOST_CONNECTION returning to Idle");
+            sendDataPrimary(SIPEvent.BYE);
+//            user.getOut().close();
             // instead of closing out maybe add boolean isConnected?
             return new Idle();
         } else {

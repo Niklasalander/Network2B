@@ -34,7 +34,8 @@ public class IsInviting extends Busy {
     public SIPState gotBUSY(User user) {
         if (isSameUser(user)) {
             if (user != null) {
-                user.getOut().close();
+                user.endConnection();
+//                user.getOut().close();
             }
             return new Idle();
         }

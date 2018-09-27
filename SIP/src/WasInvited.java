@@ -31,7 +31,7 @@ public class WasInvited extends Busy {
                 System.out.println("Busy in IsInviting");
                 sendBusyAndCloseWriter(user);
             }
-            return (this);
+            return this;
         }
     }
     
@@ -43,6 +43,7 @@ public class WasInvited extends Busy {
     public SIPState gotBUSY(User user) {
         if (isSameUser(user)) {
             if (user.getOut() != null) {
+                
                 user.getOut().close();
             }
             return new Idle();

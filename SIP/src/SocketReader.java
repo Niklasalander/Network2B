@@ -24,75 +24,70 @@ public class SocketReader extends Thread {
     protected PrintWriter out;
     private User u;
     private boolean isConnected;
+    
     public SocketReader(User user){
         this.u = user;
+        this.socket = user.getSocket();
+        this.in = user.getIn();
+        this.out = user.getOut();
         isConnected = true;
         System.out.println("Initiated");
     }
-    public SocketReader(Socket socket){
-        
-        this.socket = socket;
-//        sendAlive = new Timer();
-        if (socket != null) {
-            try {
-                in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-                out = new PrintWriter(new OutputStreamWriter(socket.getOutputStream()));
-                isConnected = true;
-
-            } catch (IOException ex) {
-                isConnected = false;
-                try {
-                    if (in != null)
-                        in.close();
-                    if (out != null)
-                        out.close();
-                } catch (IOException e) {
-                }
-                System.out.println("Could not establish connection to client");
-            }
-        }
-    }
     
-    public SocketReader(Socket socket, PrintWriter out){
-        this.socket = socket;
-//        sendAlive = new Timer();
-        if (socket != null) {
-            try {
-                in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-                this.out = out;
-                isConnected = true;
-
-            } catch (IOException ex) {
-                isConnected = false;
-                try {
-                    if (in != null)
-                        in.close();
-                    if (out != null)
-                        out.close();
-                } catch (IOException e) {
-                }
-                System.out.println("Could not establish connection to client");
-            }
-        }
-    }
-    
-    public synchronized void sendMessage(SIPEvent event) {
-        if (true)
-            return;
-        out.print(event);
-        out.flush();
-        System.out.println("Message sent");
-    }
+//    public SocketReader(Socket socket){
+//        
+//        this.socket = socket;
+////        sendAlive = new Timer();
+//        if (socket != null) {
+//            try {
+//                in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+//                out = new PrintWriter(new OutputStreamWriter(socket.getOutputStream()));
+//                isConnected = true;
+//
+//            } catch (IOException ex) {
+//                isConnected = false;
+//                try {
+//                    if (in != null)
+//                        in.close();
+//                    if (out != null)
+//                        out.close();
+//                } catch (IOException e) {
+//                }
+//                System.out.println("Could not establish connection to client");
+//            }
+//        }
+//    }
+//    
+//    public SocketReader(Socket socket, PrintWriter out){
+//        this.socket = socket;
+////        sendAlive = new Timer();
+//        if (socket != null) {
+//            try {
+//                in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+//                this.out = out;
+//                isConnected = true;
+//
+//            } catch (IOException ex) {
+//                isConnected = false;
+//                try {
+//                    if (in != null)
+//                        in.close();
+//                    if (out != null)
+//                        out.close();
+//                } catch (IOException e) {
+//                }
+//                System.out.println("Could not establish connection to client");
+//            }
+//        }
+//    }
     
     @Override
     public void run() {
-        System.out.println("in run");
         if (this.u.getIn() != null && this.u.getOut() != null) {
             String str = "";
             SIPEvent event;
-             System.out.println("in if");
             try {
-                while (this.u.getOut() != null) {
+                while (u.getIsConnected()) { //this.u.getOut() != null) {
                     System.out.println("SR waiting for string...");
                     str = u.getIn().readLine();
                     System.out.println("gotstr: " + str);
@@ -114,11 +109,14 @@ public class SocketReader extends Thread {
                 System.out.println("A client timed out");
             } catch (NullPointerException ex) {
                 System.out.println("Connection with client abrupty lost");
+                SIPHandler.processNextEvent(SIPEvent.LOST_CONNECTION, u);
             } catch (SocketException se) {
                 System.out.println("Could not read from socket handeling client");
+                SIPHandler.processNextEvent(SIPEvent.LOST_CONNECTION, u);
             } catch (IOException ex) {
                 System.out.println("Client handler run method");
             }  finally {
+                //TODO: make sure state is idle
                 try {
                     System.out.println("Removing client");
                     if (socket != null) {

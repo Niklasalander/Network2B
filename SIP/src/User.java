@@ -3,6 +3,7 @@ import java.io.BufferedReader;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.net.InetAddress;
+import java.net.Socket;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -15,23 +16,32 @@ import java.net.InetAddress;
  * @author fno
  */
 public class User {
-    private InetAddress address;
-    private int port;
     private BufferedReader in;
     private PrintWriter out;
+    private Socket socket;
+    private boolean isConnected;
     private int id;
 
-    public User(InetAddress addr, int port) {
+    public User() {
        //To change body of generated methods, choose Tools | Templates.
-       this.address = addr;
-       this.port = port;
        this.id = NetworkServer.getNewUserId();
+       this.isConnected = true;
     }
 
-    public User(BufferedReader in, PrintWriter out) {
+    public User(Socket socket, BufferedReader in, PrintWriter out) {
+        this.socket = socket;
         this.in = in;
         this.out = out;
         this.id = NetworkServer.getNewUserId();
+        this.isConnected = true;
+    }
+    
+    public void endConnection() {
+        isConnected = false;
+    }
+    
+    public boolean getIsConnected() {
+        return isConnected;
     }
 
     public int getId() {
@@ -53,6 +63,16 @@ public class User {
     public void setOut(PrintWriter out) {
         this.out = out;
     }
+
+    public Socket getSocket() {
+        return socket;
+    }
+
+    public void setSocket(Socket socket) {
+        this.socket = socket;
+    }
+    
+    
     
     
     
