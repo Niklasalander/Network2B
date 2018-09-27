@@ -1,3 +1,6 @@
 /DoorExperiment/nbproject/private/
 /DoorExperiment/build/
 /SIP/nbproject/private/
+/SIP/dist/
+/SIP/build/
+/SIP/src/*.class

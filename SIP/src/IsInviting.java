@@ -10,10 +10,10 @@ import java.io.PrintWriter;
  *
  * @author fno
  */
-public class IsInviting extends Busy {
+public class IsInviting extends CanTimeout {
 
-    public IsInviting() {
-    }
+//    public IsInviting() {
+//    }
 
     public IsInviting(User user) {
         super(user);
@@ -21,6 +21,7 @@ public class IsInviting extends Busy {
 
     public SIPState gotTRO(User user) {
         if (isSameUser(user)) {
+            cancelTimer();
             sendDataPrimary(SIPEvent.ACK);
             System.out.println("Got TRO now we send ACK...");
             return new InCall(user);
@@ -33,6 +34,7 @@ public class IsInviting extends Busy {
     
     public SIPState gotBUSY(User user) {
         if (isSameUser(user)) {
+            cancelTimer();
             if (user != null) {
                 user.endConnection();
 //                user.getOut().close();

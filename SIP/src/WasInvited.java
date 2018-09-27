@@ -1,5 +1,6 @@
 
 import java.io.PrintWriter;
+import java.util.Timer;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -10,17 +11,19 @@ import java.io.PrintWriter;
  *
  * @author fno
  */
-public class WasInvited extends Busy {
-
-    public WasInvited() {
-
-    }
+public class WasInvited extends CanTimeout {
+//    public WasInvited() {
+//        System.out.println("was invited");
+//    }
 
     public WasInvited(User user) {
+       
         super(user);
+        System.out.println("was invited +");
     }
 
     public SIPState gotACK(User user) {
+        cancelTimer();
         if (isSameUser(user)) {
             // Start audio stream
             System.out.println("Got ACK going to InCall... ");
@@ -31,19 +34,22 @@ public class WasInvited extends Busy {
                 System.out.println("Busy in IsInviting");
                 sendBusyAndCloseWriter(user);
             }
-            return this;
+            return (this);
         }
     }
     
     public SIPState sendTRO() {
+        cancelTimer();
         sendDataPrimary(SIPEvent.TRO);
+        
         return this;
     }
     
     public SIPState gotBUSY(User user) {
+        cancelTimer();
+        System.out.println("Got busy");
         if (isSameUser(user)) {
             if (user.getOut() != null) {
-                
                 user.getOut().close();
             }
             return new Idle();
@@ -53,8 +59,17 @@ public class WasInvited extends Busy {
             return this;
         }
     }
+    
+     public SIPState timeoutReached(User user) {
+        sendDataPrimary(SIPEvent.BUSY);
+        System.out.println("Timeout Was Invited sent BUSY");
+        return new Idle();
+    }
 
     public void printState() {
         System.out.println("You are now in the 'was invited' state...");
     }
+    
+  
+    
 }

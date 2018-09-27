@@ -89,8 +89,8 @@ public abstract class Busy extends SIPState {
         System.out.println("doing bye");
         if (isSameUser(user)) {
             System.out.println("Got BYE sending OK");
-            sendDataPrimary(SIPEvent.OK);
-            user.getOut().close();
+//            sendDataPrimary(SIPEvent.OK);
+//            user.getOut().close();
             // instead of closing out maybe add boolean isConnected?
             return new Idle();
         } else {

@@ -11,11 +11,11 @@ import java.io.PrintWriter;
  *
  * @author fno
  */
-public class Exiting extends Busy{
+public class Exiting extends CanTimeout {
     
-    public Exiting(){
-        
-    }
+//    public Exiting(){
+//        
+//    }
     
     public Exiting(User user) {
         super(user);
@@ -23,6 +23,7 @@ public class Exiting extends Busy{
     
     public SIPState gotOK(User user) {
         if (isSameUser(user)) {
+            cancelTimer();
             //clean up
             if (user.getOut() != null)
                 user.getOut().close();
@@ -32,7 +33,6 @@ public class Exiting extends Busy{
             sendBusyAndCloseWriter(user);
             return this;
         }
-        
     }
     
 }

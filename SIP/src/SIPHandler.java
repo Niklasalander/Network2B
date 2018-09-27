@@ -27,10 +27,10 @@ public class SIPHandler extends Thread {
     public String reportStates(){
         return currentState.returnStates();
     }
-    public static synchronized void processNextEvent (SIPEvent event, User user) {
+    public static void processNextEvent (SIPEvent event, User user) {
         if (currentState == null)
             System.out.println("currentState IS NULL!!!!");
-        System.out.println("in next event " + currentState.returnStates());
+        System.out.println("in next event " + currentState.returnStates() + " "  +event);
         switch(event){
             case SEND_INVITE : currentState= currentState.inviting(user);break; // caller
             case INVITE : currentState= currentState.invited(user);break; // callee
@@ -39,12 +39,14 @@ public class SIPHandler extends Thread {
             case BYE : currentState = currentState.gotBYE(user);break; //callee -> caller (wants to exit)
             case OK  : currentState = currentState.gotOK(user);break; // callee -> caller 
             case BUSY : currentState = currentState.gotBUSY(user);break;
+            case TIMEOUT : currentState = currentState.timeoutReached(user);break;
+//            case SEND_BUSY: currentState = currentState.sendBYE(user);break;
             case LOST_CONNECTION : currentState = currentState.lostConnection(user);break;
         }
         System.out.print("Printing current state: ");currentState.printState();
     }
     
-    public static synchronized void processNextEvent (SIPEvent event) {
+    public static void processNextEvent (SIPEvent event) {
         if (currentState == null)
             System.out.println("currentState IS NULL!!!!");
         switch(event){
@@ -55,6 +57,7 @@ public class SIPHandler extends Thread {
     }
     
     
+
     
     public static String getCurrentState() {
         return currentState.getClass().getSimpleName();
