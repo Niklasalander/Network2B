@@ -62,6 +62,9 @@ public abstract class SIPState {
     public SIPState sendTRO() {
         return this;
     }
+      public SIPState sendTRO(User user) {
+          return this;
+      }
     
     public SIPState lostConnection(User user) {
         return this;
@@ -102,4 +105,13 @@ public abstract class SIPState {
             ex.printStackTrace();
         }
     }
+     protected void sendDataWithInteger(SIPEvent event, int number) {
+        try {
+            user.getOut().println(event + " " + number);
+            user.getOut().flush();
+        } catch (Exception ex) {
+            System.out.println("SIPState could not send data");
+            ex.printStackTrace();
+        }
+    } 
 }

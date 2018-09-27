@@ -27,10 +27,11 @@ public class InputHandler extends Thread {
     private static final String ACCEPTE = "ACCEPTE";
     private static final String HANGUPE = "HANGUPE";
 //    private static int idProvider = 0;
-    private User target;
-
+    private User target; 
+    private User localUser;
     public InputHandler() {
-        
+        localUser = new User();   
+
     }
     
     @Override 
@@ -44,7 +45,7 @@ public class InputHandler extends Thread {
                 String input = sc.nextLine().trim().toUpperCase();
                 String[] received = input.split(" ");
                 command = received[0].trim().toUpperCase();
-
+                 System.out.println("THIS USER " + localUser.getLocalPortNumber());
                 switch(command) {
                     case EXIT : break;
                     case CALL : 
@@ -57,7 +58,11 @@ public class InputHandler extends Thread {
 //                        NetworkServer.beginSocketReader(this.target);
                         SIPHandler.processNextEvent(SIPEvent.SEND_INVITE, this.target);
                         break;
-                    case ACCEPT : SIPHandler.processNextEvent(SIPEvent.SEND_TRO); break;
+                    case ACCEPT :  if(this.localUser.getLocalPortNumber()!=0){
+                         this.target = new User(this.localUser.getLocalPortNumber());
+                         SIPHandler.processNextEvent(SIPEvent.SEND_TRO,this.localUser); break;
+                    }
+                       
                     case "A" : SIPHandler.processNextEvent(SIPEvent.SEND_TRO); break;
                     case HANGUP : SIPHandler.processNextEvent(SIPEvent.SEND_BYE); break;
                     case "H" : SIPHandler.processNextEvent(SIPEvent.SEND_BYE); break;

@@ -44,6 +44,12 @@ public class WasInvited extends CanTimeout {
         
         return this;
     }
+     public SIPState sendTRO(User user) {
+       cancelTimer();
+        sendDataWithInteger(SIPEvent.TRO,user.getRemotePortNumber());
+        return this;
+    }
+
     
     public SIPState gotBUSY(User user) {
         cancelTimer();

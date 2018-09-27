@@ -22,7 +22,8 @@ public class IsInviting extends CanTimeout {
     public SIPState gotTRO(User user) {
         if (isSameUser(user)) {
             cancelTimer();
-            sendDataPrimary(SIPEvent.ACK);
+            sendDataWithInteger(SIPEvent.ACK,user.getRemotePortNumber());
+
             System.out.println("Got TRO now we send ACK...");
             return new InCall(user);
         } 
