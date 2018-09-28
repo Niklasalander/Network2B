@@ -63,13 +63,19 @@ public class NetworkServer {
     }
 
     public static void main(String[] args) {
+         InetAddress addr = null;
         try {
             int port = 9912;
             if (args.length == 1) {
                 port = Integer.parseInt(args[0]);
+                addr = InetAddress.getByName("localhost");
+            }
+             if (args.length == 2) {
+                  port = Integer.parseInt(args[0]);
+                  addr = InetAddress.getByName((args[1]));
             }
             System.out.println("port: " + port);
-            InetAddress addr = InetAddress.getByName("localhost");
+          
             ServerSocket ss = new ServerSocket(port, 1, addr);
            // User localUser = new User(addr);
             LocalUser lUser = new LocalUser(addr);

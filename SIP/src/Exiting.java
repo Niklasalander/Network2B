@@ -24,6 +24,7 @@ public class Exiting extends CanTimeout {
     public SIPState gotOK(RemoteUser user) {
         if (isSameUser(user)) {
             cancelTimer();
+            user.getLocalUser().getAudioStream().close();
             //clean up
             if (user.getOut() != null)
                 user.getOut().close();
