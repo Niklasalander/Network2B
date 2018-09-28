@@ -65,11 +65,15 @@ public class NetworkServer {
     public static void main(String[] args) {
         try {
             int port = 9912;
-            if (args.length == 1) {
+            String address = "localhost";
+            if (args.length > 0) {
                 port = Integer.parseInt(args[0]);
             }
+            if (args.length > 1) {
+                address = args[1];
+            }
             System.out.println("port: " + port);
-            InetAddress addr = InetAddress.getByName("localhost");
+            InetAddress addr = InetAddress.getByName(address);
             ServerSocket ss = new ServerSocket(port, 1, addr);
             User localUser = new User(addr);
             inHandler = new InputHandler(localUser);
