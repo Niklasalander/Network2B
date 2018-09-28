@@ -43,11 +43,24 @@ public class User {
             Logger.getLogger(User.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
+    public User(InetAddress address){
+        this.id = NetworkServer.getNewUserId();
+        this.address = address;
+        this.isConnected = true;
+        try {
+            this.audioStream = new AudioStreamUDP();
+            address = InetAddress.getByName("localhost");
+        } catch (IOException ex) {
+            Logger.getLogger(User.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
     
     public User(int remoteAudio){
+        this.id = NetworkServer.getNewUserId();
         try {
             this.remoteAudioPort = remoteAudio;
             address = InetAddress.getByName("localhost");
+            this.isConnected = true;
         } catch (UnknownHostException ex) {
             Logger.getLogger(User.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -59,6 +72,21 @@ public class User {
         this.out = out;
         this.id = NetworkServer.getNewUserId();
         this.isConnected = true;
+    }
+     public User(Socket socket, BufferedReader in, PrintWriter out, InetAddress address) {
+        this.id = NetworkServer.getNewUserId();
+        this.socket = socket;
+        this.in = in;
+        this.out = out;
+        this.id = NetworkServer.getNewUserId();
+        this.isConnected = true;
+        this.address = address;
+        try {
+            this.audioStream = new AudioStreamUDP();
+            address = InetAddress.getByName("localhost");
+        } catch (IOException ex) {
+            Logger.getLogger(User.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
     
     public void endConnection() {

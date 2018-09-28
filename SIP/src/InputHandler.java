@@ -29,8 +29,8 @@ public class InputHandler extends Thread {
 //    private static int idProvider = 0;
     private User target; 
     private User localUser;
-    public InputHandler() {
-        localUser = new User();   
+    public InputHandler(User newUser) {
+        this.localUser  = newUser;
 
     }
     
@@ -45,7 +45,7 @@ public class InputHandler extends Thread {
                 String input = sc.nextLine().trim().toUpperCase();
                 String[] received = input.split(" ");
                 command = received[0].trim().toUpperCase();
-                 System.out.println("THIS USER " + localUser.getLocalPortNumber());
+                 System.out.println("THIS USER gets " + input);
                 switch(command) {
                     case EXIT : break;
                     case CALL : 
@@ -143,6 +143,7 @@ public class InputHandler extends Thread {
         this.target = new User(); // to and from B
         NetworkServer.initReceiver(this.target, new Socket(ipAddress, port));
         NetworkServer.beginSocketReader(this.target);
+        System.out.println("init socket");
     }
     
 }

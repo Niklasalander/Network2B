@@ -28,11 +28,14 @@ public class NetworkServer {
     private static int idProvider = 0;
 
     // THIS IS B
-    public static synchronized void beginSocketReader(Socket socketInstance) {
+    public static synchronized void beginSocketReader(Socket socketInstance, User newUser) {
         try {
-            User receiverUser = new User(socketInstance, new BufferedReader(new InputStreamReader(socketInstance.getInputStream())),
-                    new PrintWriter(new OutputStreamWriter(socketInstance.getOutputStream())));
-            beginSocketReader(receiverUser);
+            /*User receiverUser = new User(socketInstance, new BufferedReader(new InputStreamReader(socketInstance.getInputStream())),
+                    new PrintWriter(new OutputStreamWriter(socketInstance.getOutputStream())));*/
+            newUser.setSocket(socketInstance);
+            newUser.setIn(new BufferedReader(new InputStreamReader(socketInstance.getInputStream())));
+            newUser.setOut(new PrintWriter(new OutputStreamWriter(socketInstance.getOutputStream())));
+            beginSocketReader(newUser);
         } catch (IOException ex) {
             Logger.getLogger(NetworkServer.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -68,13 +71,14 @@ public class NetworkServer {
             System.out.println("port: " + port);
             InetAddress addr = InetAddress.getByName("localhost");
             ServerSocket ss = new ServerSocket(port, 1, addr);
-            inHandler = new InputHandler();
+            User localUser = new User(addr);
+            inHandler = new InputHandler(localUser);
             inHandler.start();
             System.out.println("Server started... ");
             while (true) {
                 System.out.println("Waiting for connection...");
                 Socket s = ss.accept();
-                beginSocketReader(s);
+                beginSocketReader(s,localUser);
             }
         } catch (IOException ex) {
             ex.printStackTrace();
