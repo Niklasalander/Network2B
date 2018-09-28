@@ -17,12 +17,14 @@ import java.util.logging.Logger;
 public class InCall extends Busy {
     public InCall(){};
     
-    public InCall(User user){
+    public InCall(RemoteUser user){
         super(user);
          AudioStreamUDP  audio= user.getLocalUser().getAudioStream();
         try {
-            audio.connectTo(user.getLocalUser().getAddress(), user.getLocalUser().getRemotePortNumber());
+            System.out.println("I am user " + user.getLocalUser().getAudioPort() + " and will connect with " + +user.getRemoteUserPort());
+            audio.connectTo(user.getLocalUser().getAddress(), user.getRemoteUserPort());
             audio.startStreaming();
+          
         } catch (IOException ex) {
             Logger.getLogger(InCall.class.getName()).log(Level.SEVERE, null, ex);
         }
