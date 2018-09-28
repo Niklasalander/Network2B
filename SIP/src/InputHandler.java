@@ -27,9 +27,9 @@ public class InputHandler extends Thread {
     private static final String ACCEPTE = "ACCEPTE";
     private static final String HANGUPE = "HANGUPE";
 //    private static int idProvider = 0;
-    private User target; 
-    private User localUser;
-    public InputHandler(User newUser) {
+    private RemoteUser target; 
+    private LocalUser localUser;
+    public InputHandler(LocalUser newUser) {
         this.localUser  = newUser;
 
     }
@@ -45,22 +45,17 @@ public class InputHandler extends Thread {
                 String input = sc.nextLine().trim().toUpperCase();
                 String[] received = input.split(" ");
                 command = received[0].trim().toUpperCase();
-                 System.out.println("THIS USER gets " + input);
+                System.out.println("user " + localUser.getAudioPort());
                 switch(command) {
                     case EXIT : break;
                     case CALL : 
                         initSocket(received);
-//                        ipString = received[1].trim();
-//                        InetAddress ipAddress = InetAddress.getByName(ipString);
-//                        port = Integer.parseInt(received[2].trim());
-//                        this.target = new User(ipAddress, port); // to and from B
-//                        NetworkServer.initReceiver(target,new Socket(ipAddress, port));
-//                        NetworkServer.beginSocketReader(this.target);
                         SIPHandler.processNextEvent(SIPEvent.SEND_INVITE, this.target);
                         break;
-                    case ACCEPT :  if(this.localUser.getLocalPortNumber()!=0){
-                         this.target = new User(this.localUser.getLocalPortNumber());
-                         SIPHandler.processNextEvent(SIPEvent.SEND_TRO,this.localUser); break;
+                    case ACCEPT :  if(this.localUser.getAudioPort()!=0){
+                         this.target = new RemoteUser(this.localUser.getAudioPort());
+                         SIPHandler.processNextEvent(SIPEvent.SEND_TRO,this.target);
+                         break;
                     }
                        
                     case "A" : SIPHandler.processNextEvent(SIPEvent.SEND_TRO); break;
@@ -140,9 +135,9 @@ public class InputHandler extends Thread {
         String ipString = received[1].trim();
         InetAddress ipAddress = InetAddress.getByName(ipString);
         int port = Integer.parseInt(received[2].trim());
-        this.target = new User(); // to and from B
+        this.target = new RemoteUser(ipAddress); // to and from B
         NetworkServer.initReceiver(this.target, new Socket(ipAddress, port));
-        NetworkServer.beginSocketReader(this.target);
+        NetworkServer.beginSocketReader(this.target,this.localUser);
         System.out.println("init socket");
     }
     

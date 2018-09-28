@@ -17,11 +17,11 @@ public class Exiting extends CanTimeout {
 //        
 //    }
     
-    public Exiting(User user) {
+    public Exiting(RemoteUser user) {
         super(user);
     }
     
-    public SIPState gotOK(User user) {
+    public SIPState gotOK(RemoteUser user) {
         if (isSameUser(user)) {
             cancelTimer();
             //clean up

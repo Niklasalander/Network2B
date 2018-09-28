@@ -28,27 +28,27 @@ public class NetworkServer {
     private static int idProvider = 0;
 
     // THIS IS B
-    public static synchronized void beginSocketReader(Socket socketInstance, User newUser) {
+    public static synchronized void beginSocketReader(Socket socketInstance, LocalUser localUser) {
         try {
-            /*User receiverUser = new User(socketInstance, new BufferedReader(new InputStreamReader(socketInstance.getInputStream())),
-                    new PrintWriter(new OutputStreamWriter(socketInstance.getOutputStream())));*/
-            newUser.setSocket(socketInstance);
+            RemoteUser newUser = new RemoteUser(socketInstance, new BufferedReader(new InputStreamReader(socketInstance.getInputStream())),
+                    new PrintWriter(new OutputStreamWriter(socketInstance.getOutputStream())));
+          /*  newUser.setSocket(socketInstance);
             newUser.setIn(new BufferedReader(new InputStreamReader(socketInstance.getInputStream())));
-            newUser.setOut(new PrintWriter(new OutputStreamWriter(socketInstance.getOutputStream())));
-            beginSocketReader(newUser);
+            newUser.setOut(new PrintWriter(new OutputStreamWriter(socketInstance.getOutputStream())));*/
+            beginSocketReader(newUser,localUser);
         } catch (IOException ex) {
             Logger.getLogger(NetworkServer.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
     // THIS IS A
-    public static synchronized void beginSocketReader(User user) {
-        SocketReader sr = new SocketReader(user);
+    public static synchronized void beginSocketReader(RemoteUser user,LocalUser localUser) {
+        SocketReader sr = new SocketReader(user,localUser);
         sr.start();
     }
 
     //THIS IS A
-    public static synchronized void initReceiver(User foreigner, Socket se) {
+    public static synchronized void initReceiver(RemoteUser foreigner, Socket se) {
         try {
             foreigner.setSocket(se);
             foreigner.setIn(new BufferedReader(new InputStreamReader(se.getInputStream())));
@@ -71,14 +71,15 @@ public class NetworkServer {
             System.out.println("port: " + port);
             InetAddress addr = InetAddress.getByName("localhost");
             ServerSocket ss = new ServerSocket(port, 1, addr);
-            User localUser = new User(addr);
-            inHandler = new InputHandler(localUser);
+           // User localUser = new User(addr);
+            LocalUser lUser = new LocalUser(addr);
+            inHandler = new InputHandler(lUser);
             inHandler.start();
             System.out.println("Server started... ");
             while (true) {
                 System.out.println("Waiting for connection...");
                 Socket s = ss.accept();
-                beginSocketReader(s,localUser);
+                beginSocketReader(s,lUser);
             }
         } catch (IOException ex) {
             ex.printStackTrace();

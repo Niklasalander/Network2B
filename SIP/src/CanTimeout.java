@@ -14,13 +14,13 @@ import java.util.Timer;
 public class CanTimeout extends Busy {
     private Timer rsTimer;
     
-    public CanTimeout(User user) {
+    public CanTimeout(RemoteUser user) {
         super(user);
         rsTimer = new Timer();
-        rsTimer.schedule(new ResponsiveServerTimer(user), 5000);
+        rsTimer.schedule(new ResponsiveServerTimer(user), 100000);
     }
     
-    public SIPState timeoutReached(User user) {
+    public SIPState timeoutReached(RemoteUser user) {
         sendDataPrimary(SIPEvent.BYE);
         System.out.println("CanTimeout sent BYE");
         return new Idle();

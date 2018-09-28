@@ -15,14 +15,14 @@ public class IsInviting extends CanTimeout {
 //    public IsInviting() {
 //    }
 
-    public IsInviting(User user) {
+    public IsInviting(RemoteUser user) {
         super(user);
     }
 
-    public SIPState gotTRO(User user) {
+    public SIPState gotTRO(RemoteUser user) {
         if (isSameUser(user)) {
             cancelTimer();
-            sendDataWithInteger(SIPEvent.ACK,user.getRemotePortNumber());
+            sendDataWithInteger(SIPEvent.ACK,user.getLocalUsersPort());
 
             System.out.println("Got TRO now we send ACK...");
             return new InCall(user);
@@ -33,7 +33,7 @@ public class IsInviting extends CanTimeout {
         }
     }
     
-    public SIPState gotBUSY(User user) {
+    public SIPState gotBUSY(RemoteUser user) {
         if (isSameUser(user)) {
             cancelTimer();
             if (user != null) {
