@@ -21,8 +21,9 @@ public class InCall extends Busy {
         super(user);
          AudioStreamUDP  audio= user.getLocalUser().getAudioStream();
         try {
-            System.out.println("I am user " + user.getLocalUser().getAudioPort() + " and will connect with " + +user.getRemoteUserPort());
-            audio.connectTo(user.getLocalUser().getAddress(), user.getRemoteUserPort());
+            System.out.println("I am user " + user.getLocalUser().getAudioPort() + " Address: " + user.getLocalUser().getAddress() + " " +
+                    " and will connect with " + +user.getRemoteUserPort() + "Address " + user.getAddress() );
+            audio.connectTo(user.getAddress(),   user.getRemoteUserPort());
             audio.startStreaming();
           
         } catch (IOException ex) {

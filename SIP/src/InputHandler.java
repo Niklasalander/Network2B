@@ -45,19 +45,24 @@ public class InputHandler extends Thread {
                 String input = sc.nextLine().trim().toUpperCase();
                 String[] received = input.split(" ");
                 command = received[0].trim().toUpperCase();
-                System.out.println("user " + localUser.getAudioPort());
+                System.out.println("user " + localUser.getAudioPort() + " local address : " + localUser.getAddress());
                 switch(command) {
                     case EXIT : break;
                     case CALL : 
                         initSocket(received);
                         SIPHandler.processNextEvent(SIPEvent.SEND_INVITE, this.target);
                         break;
-                    case ACCEPT :  if(this.localUser.getAudioPort()!=0){
+                    case ACCEPT :  
+                        if(this.localUser.getAudioPort()!=0){
                          this.target = new RemoteUser(this.localUser.getAudioPort());
+                         this.target.setLocalAddress(this.localUser.getAddress());
                          SIPHandler.processNextEvent(SIPEvent.SEND_TRO,this.target);
                          break;
-                    }
-                       
+                         }
+                        else{
+                         SIPHandler.processNextEvent(SIPEvent.LOST_CONNECTION,this.target);
+                        }
+ 
                     case "A" : SIPHandler.processNextEvent(SIPEvent.SEND_TRO); break;
                     case HANGUP : SIPHandler.processNextEvent(SIPEvent.SEND_BYE); break;
                     case "H" : SIPHandler.processNextEvent(SIPEvent.SEND_BYE); break;

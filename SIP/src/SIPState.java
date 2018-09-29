@@ -115,4 +115,14 @@ public abstract class SIPState {
             ex.printStackTrace();
         }
     } 
+       protected void sendDataWithIntegers(SIPEvent event, int number,String ipAddress) {
+        try {
+           
+            user.getOut().println(event + " " + number + " " + ipAddress);
+            user.getOut().flush();
+        } catch (Exception ex) {
+            System.out.println("SIPState could not send data");
+            ex.printStackTrace();
+        }
+    } 
 }

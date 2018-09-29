@@ -2,6 +2,7 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.net.InetAddress;
 import java.net.Socket;
 import java.net.SocketException;
 import java.net.SocketTimeoutException;
@@ -49,7 +50,7 @@ public class SocketReader extends Thread {
                     str = u.getIn().readLine();
                     String[] received = str.split(" ");
                     String command = received[0].trim().toUpperCase();
-                    System.out.println("gotstr: " + str + " id " +u.getId() + " local : " + this.lUser.getAudioPort() );
+                    System.out.println("gotstr: " + str + " id " +u.getId() + " local : " + this.lUser.getAudioPort() + " "  );
                     
 //                    event = (SIPEvent) in.read();
                     switch(command) {
@@ -63,16 +64,18 @@ public class SocketReader extends Thread {
                             //  u.setRemotePortNumber(this.localUser.getLocalPortNumber());
                             //  u.setRemotePortNumber(this.localUser.getLocalPortNumber());
                               u.setLocalUsersPort(this.lUser.getAudioPort());
-          
                               u.setRemoteUserPort(Integer.parseInt(received[1]));
+                             // u.setLocalAddress(InetAddress.);
                               u.setLocalUser(lUser);
                               
+                             
                               SIPHandler.processNextEvent(SIPEvent.TRO, u);break;
                         case "ACK" : 
+                          
                              u.setRemoteUserPort(Integer.parseInt(received[1]));
-                             //this.localUser.setRemotePortNumber(Integer.parseInt(received[1]));
-                             System.out.println("this users remote port: " + this.u.getLocalUsersPort() + " me: " +this.u.getRemoteUserPort());
-                            u.setLocalUser(lUser);
+                             u.setAddress(InetAddress.getByName(received[2].trim()));
+                             //u.setAddress(InetAddress.getByName("localhost"));
+                             u.setLocalUser(lUser);
                             SIPHandler.processNextEvent(SIPEvent.ACK, u);break;
                         case "BYE" : SIPHandler.processNextEvent(SIPEvent.BYE, u);break;
                         case "OK" : SIPHandler.processNextEvent(SIPEvent.OK, u);break;
