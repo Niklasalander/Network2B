@@ -22,7 +22,7 @@ public class InCall extends Busy {
          AudioStreamUDP  audio= user.getLocalUser().getAudioStream();
         try {
             System.out.println("I am user " + user.getLocalUser().getAudioPort() + " Address: " + user.getLocalUser().getAddress() + " " +
-                    " and will connect with " + +user.getRemoteUserPort() + "Address " + user.getAddress() );
+                    " and will connect with " + +user.getRemoteUserPort() + "Address " + user.getAddress() + " " );
             audio.connectTo(user.getAddress(),   user.getRemoteUserPort());
             audio.startStreaming();
           
