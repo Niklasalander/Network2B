@@ -16,42 +16,43 @@ import java.net.Socket;
  */
 public abstract class SIPState {
 
-    protected static User user;
+    protected static RemoteUser user;
+    //protected static LocalUser localUser;
 
     public SIPState() {
         System.out.println("Creating new SIP state withuser printwriter");
     }
 
-    public SIPState(User user) {
+    public SIPState(RemoteUser user) {
         System.out.println("Creating new SIP state with printwriter");
         this.user = user;
     }
     
-    public SIPState inviting(User user) {
+    public SIPState inviting(RemoteUser user) {
         return this;
     }
 
-    public SIPState invited(User user) {
+    public SIPState invited(RemoteUser user) {
         return this;
     }
 
-    public SIPState gotTRO(User user) {
+    public SIPState gotTRO(RemoteUser user) {
         return this;
     }
 
-    public SIPState gotACK(User user) {
+    public SIPState gotACK(RemoteUser user) {
         return this;
     }
 
-    public SIPState gotOK(User user) {
+    public SIPState gotOK(RemoteUser user) {
         return this;
     }
 
-    public SIPState gotBYE(User user) {
+    public SIPState gotBYE(RemoteUser user) {
         return this;
     }
     
-    public SIPState gotBUSY(User user) {
+    public SIPState gotBUSY(RemoteUser user) {
         return this;
     }
     
@@ -62,15 +63,15 @@ public abstract class SIPState {
     public SIPState sendTRO() {
         return this;
     }
-      public SIPState sendTRO(User user) {
+      public SIPState sendTRO(RemoteUser user) {
           return this;
       }
     
-    public SIPState lostConnection(User user) {
+    public SIPState lostConnection(RemoteUser user) {
         return this;
     }
     
-    public SIPState timeoutReached(User user) {
+    public SIPState timeoutReached(RemoteUser user) {
         return this;
     }
 
@@ -83,7 +84,7 @@ public abstract class SIPState {
         return "current state : " + this.getClass().getSimpleName().toString();
     }
      
-    protected boolean isSameUser(User otherUser) {
+    protected boolean isSameUser(RemoteUser otherUser) {
         System.out.println("This  user id: " + this.user.getId());
         System.out.println("Other user id: " + otherUser.getId());
         if (user.getId() == otherUser.getId()) {

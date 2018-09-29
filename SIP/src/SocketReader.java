@@ -21,66 +21,23 @@ public class SocketReader extends Thread {
     protected Socket socket;
     protected BufferedReader in;
     protected PrintWriter out;
-    private User u;
-    private User localUser;
+    private RemoteUser u;
+  //  private User localUser;
     private boolean isConnected;
+    private LocalUser lUser;
     
-    public SocketReader(User user){
+     public SocketReader(RemoteUser user, LocalUser localUser){
         this.u = user;
         this.socket = user.getSocket();
         this.in = user.getIn();
         this.out = user.getOut();
         isConnected = true;
         System.out.println("Initiated");
-        this.localUser = new User();
+        this.lUser = localUser;
+        this.setName("Socket Reader: " + this.getId());
     }
     
-//    public SocketReader(Socket socket){
-//        
-//        this.socket = socket;
-////        sendAlive = new Timer();
-//        if (socket != null) {
-//            try {
-//                in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-//                out = new PrintWriter(new OutputStreamWriter(socket.getOutputStream()));
-//                isConnected = true;
-//
-//            } catch (IOException ex) {
-//                isConnected = false;
-//                try {
-//                    if (in != null)
-//                        in.close();
-//                    if (out != null)
-//                        out.close();
-//                } catch (IOException e) {
-//                }
-//                System.out.println("Could not establish connection to client");
-//            }
-//        }
-//    }
-//    
-//    public SocketReader(Socket socket, PrintWriter out){
-//        this.socket = socket;
-////        sendAlive = new Timer();
-//        if (socket != null) {
-//            try {
-//                in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-//                this.out = out;
-//                isConnected = true;
-//
-//            } catch (IOException ex) {
-//                isConnected = false;
-//                try {
-//                    if (in != null)
-//                        in.close();
-//                    if (out != null)
-//                        out.close();
-//                } catch (IOException e) {
-//                }
-//                System.out.println("Could not establish connection to client");
-//            }
-//        }
-//    }
+
     
     @Override
     public void run() {
@@ -93,24 +50,30 @@ public class SocketReader extends Thread {
                     str = u.getIn().readLine();
                     String[] received = str.split(" ");
                     String command = received[0].trim().toUpperCase();
-                    System.out.println("gotstr: " + str + " id " +u.getId() + " local : " + this.localUser.getLocalPortNumber() + this.u.getLocalUser());
+                    System.out.println("gotstr: " + str + " id " +u.getId() + " local : " + this.lUser.getAudioPort() );
                     
 //                    event = (SIPEvent) in.read();
                     switch(command) {
                         case "SEND_INVITE" : SIPHandler.processNextEvent(SIPEvent.SEND_INVITE, u);break;
                         case "INVITE" : 
                             SIPHandler.processNextEvent(SIPEvent.INVITE, u);
-                           // rsTimer.schedule(new ResponsiveServerTimer(u), 5000);
+                          
                         break;
                         case "TRO" : 
-                              this.localUser.setRemotePortNumber(Integer.parseInt(received[1]));
-                              u.setRemotePortNumber(this.localUser.getLocalPortNumber());
-                              u.setLocalUser(localUser);
+                           //   this.localUser.setRemotePortNumber(Integer.parseInt(received[1]));
+                            //  u.setRemotePortNumber(this.localUser.getLocalPortNumber());
+                            //  u.setRemotePortNumber(this.localUser.getLocalPortNumber());
+                              u.setLocalUsersPort(this.lUser.getAudioPort());
+          
+                              u.setRemoteUserPort(Integer.parseInt(received[1]));
+                              u.setLocalUser(lUser);
+                              
                               SIPHandler.processNextEvent(SIPEvent.TRO, u);break;
                         case "ACK" : 
-                            this.localUser.setRemotePortNumber(Integer.parseInt(received[1]));
-                            System.out.println("this users remote port: " + this.localUser.getRemotePortNumber());
-                            u.setLocalUser(localUser);
+                             u.setRemoteUserPort(Integer.parseInt(received[1]));
+                             //this.localUser.setRemotePortNumber(Integer.parseInt(received[1]));
+                             System.out.println("this users remote port: " + this.u.getLocalUsersPort() + " me: " +this.u.getRemoteUserPort());
+                            u.setLocalUser(lUser);
                             SIPHandler.processNextEvent(SIPEvent.ACK, u);break;
                         case "BYE" : SIPHandler.processNextEvent(SIPEvent.BYE, u);break;
                         case "OK" : SIPHandler.processNextEvent(SIPEvent.OK, u);break;
@@ -132,6 +95,7 @@ public class SocketReader extends Thread {
                 System.out.println("Client handler run method");
             }  finally {
                 //TODO: make sure state is idle
+                SIPHandler.processNextEvent(SIPEvent.LOST_CONNECTION, u);
                 try {
                     System.out.println("Removing client");
                     if (socket != null) {

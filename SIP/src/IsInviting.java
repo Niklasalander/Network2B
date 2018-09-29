@@ -1,5 +1,4 @@
 
-import java.io.PrintWriter;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -15,14 +14,14 @@ public class IsInviting extends CanTimeout {
 //    public IsInviting() {
 //    }
 
-    public IsInviting(User user) {
-        super(user);
+    public IsInviting(RemoteUser user) {
+        super(user, 5000);
     }
 
-    public SIPState gotTRO(User user) {
+    public SIPState gotTRO(RemoteUser user) {
         if (isSameUser(user)) {
             cancelTimer();
-            sendDataWithInteger(SIPEvent.ACK,user.getRemotePortNumber());
+            sendDataWithInteger(SIPEvent.ACK,user.getLocalUsersPort());
 
             System.out.println("Got TRO now we send ACK...");
             return new InCall(user);
@@ -33,7 +32,7 @@ public class IsInviting extends CanTimeout {
         }
     }
     
-    public SIPState gotBUSY(User user) {
+    public SIPState gotBUSY(RemoteUser user) {
         if (isSameUser(user)) {
             cancelTimer();
             if (user != null) {

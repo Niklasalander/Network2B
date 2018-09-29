@@ -17,16 +17,18 @@ public class Exiting extends CanTimeout {
 //        
 //    }
     
-    public Exiting(User user) {
+    public Exiting(RemoteUser user) {
         super(user);
     }
     
-    public SIPState gotOK(User user) {
+    public SIPState gotOK(RemoteUser user) {
         if (isSameUser(user)) {
             cancelTimer();
+            user.getLocalUser().getAudioStream().close();
             //clean up
-            if (user.getOut() != null)
-                user.getOut().close();
+            user.endConnection();
+//            if (user.getOut() != null)
+//                user.getOut().close();
             return new Idle();
         }
         else {

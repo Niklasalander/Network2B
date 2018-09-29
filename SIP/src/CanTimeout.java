@@ -14,16 +14,52 @@ import java.util.Timer;
 public class CanTimeout extends Busy {
     private Timer rsTimer;
     
-    public CanTimeout(User user) {
+    public CanTimeout(RemoteUser user) {
         super(user);
         rsTimer = new Timer();
-        rsTimer.schedule(new ResponsiveServerTimer(user), 5000);
+        rsTimer.schedule(new ResponsiveServerTimer(user), 15000);
     }
     
-    public SIPState timeoutReached(User user) {
+    public CanTimeout(RemoteUser user, int timeout) {
+        super(user);
+        rsTimer = new Timer();
+        rsTimer.schedule(new ResponsiveServerTimer(user), timeout);
+    }
+    
+    public SIPState timeoutReached(RemoteUser user) {
         sendDataPrimary(SIPEvent.BYE);
         System.out.println("CanTimeout sent BYE");
+        cancelTimer();
+        user.endConnection();
         return new Idle();
+    }
+    
+    /* may break things */
+    public SIPState gotBUSY(RemoteUser user) {
+        System.out.println("Got busy");
+        if (isSameUser(user)) {
+            cancelTimer();
+            user.endConnection();
+            return new Idle();
+        }
+        else {
+            sendBusyAndCloseWriter(user);
+            return this;
+        }
+    }
+    
+    public SIPState gotBYE(RemoteUser user) {
+        System.out.println("doing bye");
+        if (isSameUser(user)) {
+            cancelTimer();
+            System.out.println("Got BYE sending OK");
+            sendDataPrimary(SIPEvent.OK);
+            user.endConnection();
+            return new Idle();
+        } else {
+            sendBusyAndCloseWriter(user);
+            return this;
+        }
     }
     
     protected void cancelTimer() {

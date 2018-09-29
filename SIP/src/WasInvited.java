@@ -1,6 +1,8 @@
 
-import java.io.PrintWriter;
+import java.io.IOException;
 import java.util.Timer;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -16,17 +18,18 @@ public class WasInvited extends CanTimeout {
 //        System.out.println("was invited");
 //    }
 
-    public WasInvited(User user) {
+    public WasInvited(RemoteUser user) {
        
         super(user);
         System.out.println("was invited +");
     }
 
-    public SIPState gotACK(User user) {
-        cancelTimer();
+    public SIPState gotACK(RemoteUser user) {
+        
         if (isSameUser(user)) {
             // Start audio stream
             System.out.println("Got ACK going to InCall... ");
+            cancelTimer();
             return new InCall(user);
         }
         else {
@@ -42,22 +45,21 @@ public class WasInvited extends CanTimeout {
         cancelTimer();
         sendDataPrimary(SIPEvent.TRO);
         
-        return this;
+        return new WasInvited(user);
     }
-     public SIPState sendTRO(User user) {
+     public SIPState sendTRO(RemoteUser user) {
        cancelTimer();
-        sendDataWithInteger(SIPEvent.TRO,user.getRemotePortNumber());
-        return this;
+        sendDataWithInteger(SIPEvent.TRO,user.getLocalUsersPort());
+        return new WasInvited(this.user);
     }
 
     
-    public SIPState gotBUSY(User user) {
-        cancelTimer();
+    public SIPState gotBUSY(RemoteUser user) {
+        
         System.out.println("Got busy");
         if (isSameUser(user)) {
-            if (user.getOut() != null) {
-                user.getOut().close();
-            }
+            cancelTimer();
+            user.endConnection();
             return new Idle();
         }
         else {
@@ -66,9 +68,15 @@ public class WasInvited extends CanTimeout {
         }
     }
     
-     public SIPState timeoutReached(User user) {
-        sendDataPrimary(SIPEvent.BUSY);
-        System.out.println("Timeout Was Invited sent BUSY");
+     public SIPState timeoutReached(RemoteUser user) {
+        try {
+            sendDataPrimary(SIPEvent.BUSY);
+            System.out.println("Timeout Was Invited sent BUSY");
+            cancelTimer();
+            user.endConnection();
+        } catch (Exception ex) {
+            Logger.getLogger(WasInvited.class.getName()).log(Level.SEVERE, null, ex);
+        }
         return new Idle();
     }
 

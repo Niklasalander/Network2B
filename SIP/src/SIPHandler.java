@@ -27,7 +27,7 @@ public class SIPHandler extends Thread {
     public String reportStates(){
         return currentState.returnStates();
     }
-    public static void processNextEvent (SIPEvent event, User user) {
+    public static void processNextEvent (SIPEvent event, RemoteUser user) {
         if (currentState == null)
             System.out.println("currentState IS NULL!!!!");
         System.out.println("in next event " + currentState.returnStates() + " "  +event);
@@ -40,7 +40,7 @@ public class SIPHandler extends Thread {
             case OK  : currentState = currentState.gotOK(user);break; // callee -> caller 
             case BUSY : currentState = currentState.gotBUSY(user);break;
             case TIMEOUT : currentState = currentState.timeoutReached(user);break;
-//            case SEND_BUSY: currentState = currentState.sendBYE(user);break;
+//          case SEND_BUSY: currentState = currentState.sendBYE(user);break;
             case LOST_CONNECTION : currentState = currentState.lostConnection(user);break;
             case SEND_TRO : currentState = currentState.sendTRO(user);break;
         }
