@@ -43,6 +43,7 @@ public class SIPHandler extends Thread {
 //          case SEND_BUSY: currentState = currentState.sendBYE(user);break;
             case LOST_CONNECTION : currentState = currentState.lostConnection(user);break;
             case SEND_TRO : currentState = currentState.sendTRO(user);break;
+            
         }
         System.out.print("Printing current state: ");currentState.printState();
     }

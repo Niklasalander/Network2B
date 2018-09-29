@@ -95,7 +95,7 @@ public class NetworkServer {
                   port = Integer.parseInt(args[0]);
                   addr = InetAddress.getByName((args[1]));
             }
-            System.out.println("port: " + port);
+            System.out.println("port: " + port + " " + addr.getHostAddress());
           
             ss = new ServerSocket(port, 1, addr);
            // User localUser = new User(addr);

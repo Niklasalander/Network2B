@@ -25,7 +25,7 @@ public class RemoteUser {
     private int id;
     
     private InetAddress address;
-    
+    private InetAddress localAddress;
     private int localUsersPort;
     private int remoteUserPort;
     private AudioStreamUDP audioStream;
@@ -121,6 +121,9 @@ public class RemoteUser {
     public InetAddress getAddress() {
         return address;
     }
+    public void setAddress(InetAddress addr){
+        this.address = addr;
+    }
 
     public int getLocalUsersPort() {
         return localUsersPort;
@@ -136,6 +139,14 @@ public class RemoteUser {
 
     public void setRemoteUserPort(int remoteUserPort) {
         this.remoteUserPort = remoteUserPort;
+    }
+
+    public InetAddress getLocalAddress() {
+        return localAddress;
+    }
+
+    public void setLocalAddress(InetAddress localAddress) {
+        this.localAddress = localAddress;
     }
     
     
