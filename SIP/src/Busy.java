@@ -14,11 +14,11 @@ public abstract class Busy extends SIPState {
     public Busy() {
     }
 
-    public Busy(RemoteUser user) {
+    public Busy(User user) {
         super(user);
     }
 
-    public SIPState inviting(RemoteUser user) {
+    public SIPState inviting(User user) {
         System.out.println("Exit current call before starting a new one");
         if (!isSameUser(user) && user.getOut() != null) {
             user.getOut().println(SIPEvent.BYE);
@@ -28,7 +28,7 @@ public abstract class Busy extends SIPState {
         return this;
     }
 
-    public SIPState invited(RemoteUser user) {
+    public SIPState invited(User user) {
         System.out.println("this node is busy, can't be invited");
         if (isSameUser(user)) {
             // do something(?)
@@ -40,7 +40,7 @@ public abstract class Busy extends SIPState {
         return this;
     }
 
-    public SIPState gotTRO(RemoteUser user) {
+    public SIPState gotTRO(User user) {
         System.out.println("this node is busy, can't receive T.R.O");
         if (isSameUser(user)) {
             // do something(?)
@@ -52,7 +52,7 @@ public abstract class Busy extends SIPState {
         return this;
     }
 
-    public SIPState gotACK(RemoteUser user) {
+    public SIPState gotACK(User user) {
         System.out.println("this node is busy, can't receive ACK");
         if (isSameUser(user)) {
             // do something(?)
@@ -64,7 +64,7 @@ public abstract class Busy extends SIPState {
         return this;
     }
 
-    public SIPState gotOK(RemoteUser user) {
+    public SIPState gotOK(User user) {
         System.out.println("this node is busy, can't accept OK");
         if (isSameUser(user)) {
             // do something(?)
@@ -82,12 +82,14 @@ public abstract class Busy extends SIPState {
         return new Exiting(user);
     }
 
-    public SIPState gotBYE(RemoteUser user) {
+    public SIPState gotBYE(User user) {
         System.out.println("doing bye");
         if (isSameUser(user)) {
             System.out.println("Got BYE sending OK");
-            if (user.getLocalUser().getAudioStream() != null)
-                user.getLocalUser().getAudioStream().close();
+            if (user != null) {
+                user.stopAudioStream();
+                user.closeAudioStream();
+            }
             sendDataPrimary(SIPEvent.OK);
             user.endConnection();
 //            user.getOut().close();
@@ -99,7 +101,7 @@ public abstract class Busy extends SIPState {
         }
     }
     
-    public SIPState lostConnection(RemoteUser user) {
+    public SIPState lostConnection(User user) {
         if (isSameUser(user)) {
             System.out.println("Got LOST_CONNECTION returning to Idle");
             sendDataPrimary(SIPEvent.BYE);
@@ -110,7 +112,7 @@ public abstract class Busy extends SIPState {
         }
     }
 
-    protected void sendBusyAndCloseWriter(RemoteUser user) {
+    protected void sendBusyAndCloseWriter(User user) {
         System.out.println("I am BUSY");
         try {
             if (user.getOut() != null) {

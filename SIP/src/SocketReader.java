@@ -22,19 +22,13 @@ public class SocketReader extends Thread {
     protected Socket socket;
     protected BufferedReader in;
     protected PrintWriter out;
-    private RemoteUser u;
-  //  private User localUser;
-    private boolean isConnected;
-    private LocalUser lUser;
-    
-     public SocketReader(RemoteUser user, LocalUser localUser){
+    private User u;
+     
+     public SocketReader(User user){
         this.u = user;
         this.socket = user.getSocket();
         this.in = user.getIn();
         this.out = user.getOut();
-        isConnected = true;
-        System.out.println("Initiated");
-        this.lUser = localUser;
         this.setName("Socket Reader: " + this.getId());
     }
     
@@ -51,9 +45,7 @@ public class SocketReader extends Thread {
                     str = u.getIn().readLine();
                     String[] received = str.split(" ");
                     String command = received[0].trim().toUpperCase();
-                    System.out.println("gotstr: " + str + " id " +u.getId() + " local : " + this.lUser.getAudioPort() + " "  );
-                    
-//                    event = (SIPEvent) in.read();
+//                    System.out.println("gotstr: " + str + " id " +u.getId() + " local : " + this.lUser.getAudioPort() + " "  );
                     switch(command) {
                         case "SEND_INVITE" : SIPHandler.processNextEvent(SIPEvent.SEND_INVITE, u);break;
                         case "INVITE" : 
@@ -61,23 +53,14 @@ public class SocketReader extends Thread {
                           
                         break;
                         case "TRO" : 
-                           //   this.localUser.setRemotePortNumber(Integer.parseInt(received[1]));
-                            //  u.setRemotePortNumber(this.localUser.getLocalPortNumber());
-                            //  u.setRemotePortNumber(this.localUser.getLocalPortNumber());
-                              u.setLocalUsersPort(this.lUser.getAudioPort());
-                              u.setRemoteUserPort(Integer.parseInt(received[1]));
-                             // u.setLocalAddress(InetAddress.);
-                              u.setLocalUser(lUser);
-                              
-                             
-                              SIPHandler.processNextEvent(SIPEvent.TRO, u);break;
+                            u.setRemoteAudioPort(Integer.parseInt(received[1]));
+                            SIPHandler.processNextEvent(SIPEvent.TRO, u);
+                            break;
                         case "ACK" : 
-                          
-                             u.setRemoteUserPort(Integer.parseInt(received[1]));
-                             u.setAddress(InetAddress.getByName(received[2].trim()));
-                             //u.setAddress(InetAddress.getByName("localhost"));
-                             u.setLocalUser(lUser);
-                            SIPHandler.processNextEvent(SIPEvent.ACK, u);break;
+                            u.setRemoteAudioPort(Integer.parseInt(received[1]));
+                            u.setRemoteAddress(InetAddress.getByName(received[2].trim()));
+                            SIPHandler.processNextEvent(SIPEvent.ACK, u);
+                            break;
                         case "BYE" : SIPHandler.processNextEvent(SIPEvent.BYE, u);break;
                         case "OK" : SIPHandler.processNextEvent(SIPEvent.OK, u);break;
                         case "BUSY" : SIPHandler.processNextEvent(SIPEvent.BUSY, u);break;

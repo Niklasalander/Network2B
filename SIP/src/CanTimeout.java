@@ -14,19 +14,19 @@ import java.util.Timer;
 public class CanTimeout extends Busy {
     private Timer rsTimer;
     
-    public CanTimeout(RemoteUser user) {
+    public CanTimeout(User user) {
         super(user);
         rsTimer = new Timer();
         rsTimer.schedule(new ResponsiveServerTimer(user), 15000);
     }
     
-    public CanTimeout(RemoteUser user, int timeout) {
+    public CanTimeout(User user, int timeout) {
         super(user);
         rsTimer = new Timer();
         rsTimer.schedule(new ResponsiveServerTimer(user), timeout);
     }
     
-    public SIPState timeoutReached(RemoteUser user) {
+    public SIPState timeoutReached(User user) {
         sendDataPrimary(SIPEvent.BYE);
         System.out.println("CanTimeout sent BYE");
         cancelTimer();
@@ -35,7 +35,7 @@ public class CanTimeout extends Busy {
     }
     
     /* may break things */
-    public SIPState gotBUSY(RemoteUser user) {
+    public SIPState gotBUSY(User user) {
         System.out.println("Got busy");
         if (isSameUser(user)) {
             cancelTimer();
@@ -48,7 +48,7 @@ public class CanTimeout extends Busy {
         }
     }
     
-    public SIPState gotBYE(RemoteUser user) {
+    public SIPState gotBYE(User user) {
         System.out.println("doing bye");
         if (isSameUser(user)) {
             cancelTimer();

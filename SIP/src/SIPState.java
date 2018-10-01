@@ -1,9 +1,4 @@
 
-import java.io.BufferedReader;
-import java.io.ObjectOutputStream;
-import java.io.PrintWriter;
-import java.net.InetAddress;
-import java.net.Socket;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -16,43 +11,41 @@ import java.net.Socket;
  */
 public abstract class SIPState {
 
-    protected static RemoteUser user;
+    protected static User user;
     //protected static LocalUser localUser;
 
     public SIPState() {
-        System.out.println("Creating new SIP state withuser printwriter");
     }
 
-    public SIPState(RemoteUser user) {
-        System.out.println("Creating new SIP state with printwriter");
+    public SIPState(User user) {
         this.user = user;
     }
     
-    public SIPState inviting(RemoteUser user) {
+    public SIPState inviting(User user) {
         return this;
     }
 
-    public SIPState invited(RemoteUser user) {
+    public SIPState invited(User user) {
         return this;
     }
 
-    public SIPState gotTRO(RemoteUser user) {
+    public SIPState gotTRO(User user) {
         return this;
     }
 
-    public SIPState gotACK(RemoteUser user) {
+    public SIPState gotACK(User user) {
         return this;
     }
 
-    public SIPState gotOK(RemoteUser user) {
+    public SIPState gotOK(User user) {
         return this;
     }
 
-    public SIPState gotBYE(RemoteUser user) {
+    public SIPState gotBYE(User user) {
         return this;
     }
     
-    public SIPState gotBUSY(RemoteUser user) {
+    public SIPState gotBUSY(User user) {
         return this;
     }
     
@@ -63,15 +56,15 @@ public abstract class SIPState {
     public SIPState sendTRO() {
         return this;
     }
-      public SIPState sendTRO(RemoteUser user) {
+      public SIPState sendTRO(User user) {
           return this;
       }
     
-    public SIPState lostConnection(RemoteUser user) {
+    public SIPState lostConnection(User user) {
         return this;
     }
     
-    public SIPState timeoutReached(RemoteUser user) {
+    public SIPState timeoutReached(User user) {
         return this;
     }
 
@@ -84,15 +77,15 @@ public abstract class SIPState {
         return "current state : " + this.getClass().getSimpleName().toString();
     }
      
-    protected boolean isSameUser(RemoteUser otherUser) {
-        System.out.println("This  user id: " + this.user.getId());
-        System.out.println("Other user id: " + otherUser.getId());
+    protected boolean isSameUser(User otherUser) {
+//        System.out.println("This  user id: " + this.user.getId());
+//        System.out.println("Other user id: " + otherUser.getId());
         if (user.getId() == otherUser.getId()) {
-            System.out.println("It is the same user");
+//            System.out.println("It is the same user");
             return true;
         }
         else {
-            System.out.println("Not the same user");
+//            System.out.println("Not the same user");
             return false;
         }
     }
@@ -108,7 +101,8 @@ public abstract class SIPState {
     }
      protected void sendDataWithInteger(SIPEvent event, int number) {
         try {
-            user.getOut().println(event + " " + number);
+            String s = String.valueOf(number);
+            user.getOut().println(event + " " + s);
             user.getOut().flush();
         } catch (Exception ex) {
             System.out.println("SIPState could not send data");

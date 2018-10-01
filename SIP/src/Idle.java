@@ -26,7 +26,7 @@ public class Idle extends SIPState {
 
     }
     
-    public SIPState inviting(RemoteUser user) {
+    public SIPState inviting(User user) {
         this.user = user;
         sendDataPrimary(SIPEvent.INVITE);
         System.out.println("Sending INVITE, waiting for TRO");
@@ -34,7 +34,7 @@ public class Idle extends SIPState {
         return new IsInviting(user);
     }
     
-    public SIPState invited(RemoteUser user) {
+    public SIPState invited(User user) {
         this.user = user;
         System.out.println("Incoming call, type accept to answer");
 //        SIPHandler.setOut(out);

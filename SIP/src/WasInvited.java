@@ -18,14 +18,12 @@ public class WasInvited extends CanTimeout {
 //        System.out.println("was invited");
 //    }
 
-    public WasInvited(RemoteUser user) {
-       
+    public WasInvited(User user) {
         super(user);
-        System.out.println("was invited +");
+        System.out.println("Created new WasInvited");
     }
 
-    public SIPState gotACK(RemoteUser user) {
-        
+    public SIPState gotACK(User user) {
         if (isSameUser(user)) {
             // Start audio stream
             System.out.println("Got ACK going to InCall... ");
@@ -42,19 +40,20 @@ public class WasInvited extends CanTimeout {
     }
     
     public SIPState sendTRO() {
-        cancelTimer();
-        sendDataPrimary(SIPEvent.TRO);
-        
-        return new WasInvited(user);
+        try {
+            cancelTimer();
+            int localAudioPort = user.initAudioStream();
+            System.out.println("audio port: " + localAudioPort);
+            sendDataWithInteger(SIPEvent.TRO, localAudioPort);
+            return new WasInvited(this.user);
+        } catch (IOException ex) {
+            ex.printStackTrace();
+            sendBusyAndCloseWriter(user);
+            return new Idle();
+        }
     }
-     public SIPState sendTRO(RemoteUser user) {
-       cancelTimer();
-        sendDataWithInteger(SIPEvent.TRO,user.getLocalUsersPort());
-        return new WasInvited(this.user);
-    }
-
     
-    public SIPState gotBUSY(RemoteUser user) {
+    public SIPState gotBUSY(User user) {
         
         System.out.println("Got busy");
         if (isSameUser(user)) {
@@ -68,7 +67,7 @@ public class WasInvited extends CanTimeout {
         }
     }
     
-     public SIPState timeoutReached(RemoteUser user) {
+     public SIPState timeoutReached(User user) {
         try {
             sendDataPrimary(SIPEvent.BUSY);
             System.out.println("Timeout Was Invited sent BUSY");
