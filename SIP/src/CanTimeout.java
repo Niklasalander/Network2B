@@ -34,7 +34,13 @@ public class CanTimeout extends Busy {
         return new Idle();
     }
     
-    /* may break things */
+    public SIPState sendBYE(){
+        System.out.println("Seding BYE waiting for OK");
+        cancelTimer();
+        sendDataPrimary(SIPEvent.BYE);
+        return new Exiting(user);
+    }
+    
     public SIPState gotBUSY(User user) {
         System.out.println("Got busy");
         if (isSameUser(user)) {
@@ -43,13 +49,12 @@ public class CanTimeout extends Busy {
             return new Idle();
         }
         else {
-            sendBusyAndCloseWriter(user);
+            sendBusyAndDisconnectUser(user);
             return this;
         }
     }
     
     public SIPState gotBYE(User user) {
-        System.out.println("doing bye");
         if (isSameUser(user)) {
             cancelTimer();
             System.out.println("Got BYE sending OK");
@@ -57,7 +62,33 @@ public class CanTimeout extends Busy {
             user.endConnection();
             return new Idle();
         } else {
-            sendBusyAndCloseWriter(user);
+            sendBusyAndDisconnectUser(user);
+            return this;
+        }
+    }
+    
+    public SIPState lostConnection(User user) {
+        if (isSameUser(user)) {
+            System.out.println("Got LOST_CONNECTION returning to Idle");
+            cancelTimer();
+            sendDataPrimary(SIPEvent.BYE);
+            user.endConnection();
+            return new Idle();
+        } else {
+            sendBusyAndDisconnectUser(user);
+            return this;
+        }
+    }
+    
+    public SIPState makeSureIdle(User user) {
+        if (isSameUser(user)) {
+            System.out.println("Making sure we state machine doesn't get stuck outside of Idle");
+            cancelTimer();
+            user.endConnection();
+            return new Idle();
+        }
+        else {
+            sendBusyAndDisconnectUser(user);
             return this;
         }
     }

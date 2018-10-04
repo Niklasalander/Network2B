@@ -54,6 +54,12 @@ public class User {
         this.audioStream = null;
     }
     
+    public void endConnection() {
+        isConnected = false;
+        stopAudioStream();
+        closeAudioStream();
+    }
+    
     public int initAudioStream() throws IOException {
         audioStream = new AudioStreamUDP();
         localAudioPort = audioStream.getLocalPort();
@@ -106,12 +112,6 @@ public class User {
         this.remoteAudioPort = remoteAudioPort;
     }
     
-    public void endConnection() {
-        isConnected = false;
-        stopAudioStream();
-        closeAudioStream();
-    }
-
     public int getId() {
         return id;
     }

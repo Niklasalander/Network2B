@@ -105,12 +105,10 @@ public class NetworkServer {
             String str = user.getIn().readLine();
             String[] received = str.split(" ");
             String command = received[0].trim().toUpperCase();
-            if (command.equals("INVITE"))
-                SIPHandler.processNextEvent(SIPEvent.INVITE, user);
-            if (user.getIsConnected()) {
+            SIPEvent event = getEventUsingString(command);
+            SIPHandler.processNextEvent(event, user);
+            if (user.getIsConnected())
                 beginSocketReader(user);
-            }
-            
         } catch (Exception ex) {
             user.setIsConnected(false);
             ex.printStackTrace();
@@ -120,20 +118,39 @@ public class NetworkServer {
     
     
     
-    // THIS IS A
+    // THIS IS A (caller)
     public static synchronized void beginSocketReader(User user) {
         SocketReader sr = new SocketReader(user);
         sr.start();
     }
 
-    //THIS IS A
-    public static synchronized void initReceiver(User user, Socket se) {
-        try {
-            user.setSocket(se);
-            user.setIn(new BufferedReader(new InputStreamReader(se.getInputStream())));
-            user.setOut(new PrintWriter(new OutputStreamWriter(se.getOutputStream())));
-        } catch (IOException ex) {
-            ex.printStackTrace();
+    // THIS IS A (caller)
+    public static synchronized void initReceiver(User user, Socket se) throws IOException {
+        user.setSocket(se);
+        user.setIn(new BufferedReader(new InputStreamReader(se.getInputStream())));
+        user.setOut(new PrintWriter(new OutputStreamWriter(se.getOutputStream())));
+    }
+    
+    
+    
+    public static SIPEvent getEventUsingString(String command) {
+        switch(command) {
+            case "SEND_INVITE" : return SIPEvent.SEND_INVITE;
+            case "SEND_TRO" : return SIPEvent.SEND_TRO;
+            case "SEND_ACK" : return SIPEvent.SEND_ACK;
+            case "SEND_OK" : return SIPEvent.SEND_OK;
+            case "SEND_BYE" : return SIPEvent.SEND_BYE;
+            case "SEND_BUSY" : return SIPEvent.SEND_BUSY;
+            case "INVITE" : return SIPEvent.INVITE;
+            case "TRO" : return SIPEvent.TRO;
+            case "ACK" : return SIPEvent.ACK;
+            case "OK" : return SIPEvent.OK;
+            case "BYE" : return SIPEvent.BYE;
+            case "BUSY" : return SIPEvent.BUSY;
+            case "LOST_CONNECTION" : return SIPEvent.LOST_CONNECTION;
+            case "TIMEOUT" : return SIPEvent.TIMEOUT;
+            case "MAKE_SURE_IDLE" : return SIPEvent.MAKE_SURE_IDLE;
+            default : return null;
         }
     }
     

@@ -36,7 +36,7 @@ public class IsInviting extends CanTimeout {
             }
         } 
         else {
-            sendBusyAndCloseWriter(user);
+            sendBusyAndDisconnectUser(user);
             return (this);
         }
     }
@@ -50,12 +50,12 @@ public class IsInviting extends CanTimeout {
             return new Idle();
         }
         else {
-            sendBusyAndCloseWriter(user);
+            sendBusyAndDisconnectUser(user);
             return this;
         }
     }
 
     public void printState() {
-        System.out.println("You are now in inviting state...");
+        System.out.println("You are now in IsInviting state...");
     }
 }

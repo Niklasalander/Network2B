@@ -15,23 +15,23 @@ import java.util.logging.Logger;
  * @author fno
  */
 public class InCall extends Busy {
-    public InCall(){};
     
     public InCall(User user){
         super(user);
-//         AudioStreamUDP  audio= user.getLocalUser().getAudioStream();
+        
         try {
-            System.out.println("I am user " + user.getLocalAudioPort() + " Address: " + user.getLocalAddress().getHostName() + " " +
-                    " and will connect with " + +user.getRemoteAudioPort() + "Address " + user.getRemoteAddress().getHostName() + " " );
+//            System.out.println("I am user " + user.getLocalAudioPort() + " Address: " + user.getLocalAddress().getHostName() + " " +
+//                    " and will connect with " + +user.getRemoteAudioPort() + "Address " + user.getRemoteAddress().getHostName() + " " );
             user.connectAudioStream();
-//            audio.connectTo(user.getRe,   user.getUserPuser.ort());
-//            System.out.println("Starting audio stream");
             user.startAudioStream();
-//            audio.startStreaming();
-//            System.out.println("Audio streaming is running");
         } catch (IOException ex) {
-            Logger.getLogger(InCall.class.getName()).log(Level.SEVERE, null, ex);
+            sendDataPrimary(SIPEvent.BYE);
+            user.endConnection();
         }
+    }
+    
+    public void printState() {
+        System.out.println("You are now in the InCall state...");
     }
 
     

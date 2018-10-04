@@ -12,11 +12,11 @@
 public abstract class SIPState {
 
     protected static User user;
-    //protected static LocalUser localUser;
 
     public SIPState() {
+        
     }
-
+    
     public SIPState(User user) {
         this.user = user;
     }
@@ -65,6 +65,10 @@ public abstract class SIPState {
     }
     
     public SIPState timeoutReached(User user) {
+        return this;
+    }
+    
+    public SIPState makeSureIdle(User user) {
         return this;
     }
 

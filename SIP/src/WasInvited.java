@@ -33,7 +33,7 @@ public class WasInvited extends CanTimeout {
         else {
             if (user != null) {
                 System.out.println("Busy in IsInviting");
-                sendBusyAndCloseWriter(user);
+                sendBusyAndDisconnectUser(user);
             }
             return (this);
         }
@@ -48,21 +48,19 @@ public class WasInvited extends CanTimeout {
             return new WasInvited(this.user);
         } catch (IOException ex) {
             ex.printStackTrace();
-            sendBusyAndCloseWriter(user);
+            sendBusyAndDisconnectUser(user);
             return new Idle();
         }
     }
     
     public SIPState gotBUSY(User user) {
-        
-        System.out.println("Got busy");
         if (isSameUser(user)) {
             cancelTimer();
             user.endConnection();
             return new Idle();
         }
         else {
-            sendBusyAndCloseWriter(user);
+            sendBusyAndDisconnectUser(user);
             return this;
         }
     }
@@ -74,13 +72,12 @@ public class WasInvited extends CanTimeout {
             cancelTimer();
             user.endConnection();
         } catch (Exception ex) {
-            Logger.getLogger(WasInvited.class.getName()).log(Level.SEVERE, null, ex);
         }
         return new Idle();
     }
 
     public void printState() {
-        System.out.println("You are now in the 'was invited' state...");
+        System.out.println("You are now in the 'Was Invited' state...");
     }
     
   

@@ -22,12 +22,14 @@ public class InputHandler extends Thread {
     private static final String ACCEPT = "ACCEPT";
     private static final String HANGUP = "HANGUP";
     
+    private static final String NOW = "NOW";
+    private static final String FAULTY = "FAULTY";
     private static final String CURCON = "CURCON";
     private static final String NEWCON = "NEWCON";
     private static final String CALLE = "CALLE";
     private static final String ACCEPTE = "ACCEPTE";
     private static final String HANGUPE = "HANGUPE";
-//    private static int idProvider = 0;
+
     private User user;
     private InetAddress localAddress;
     private int localPort;
@@ -47,13 +49,12 @@ public class InputHandler extends Thread {
                 String input = sc.nextLine().trim().toUpperCase();
                 String[] received = input.split(" ");
                 command = received[0].trim().toUpperCase();
-//                System.out.println("user " + localUser.getAudioPort() + " local address : " + localUser.getAddress());
                 switch(command) {
                     case EXIT : SIPHandler.processNextEvent(SIPEvent.SEND_BYE); NetworkServer.killme(); break;
                     case E : SIPHandler.processNextEvent(SIPEvent.SEND_BYE); NetworkServer.killme(); break;
                     case CALL : 
                         initSocket(received);
-                        SIPHandler.processNextEvent(SIPEvent.SEND_INVITE, this.user);
+                        SIPHandler.processNextEvent(SIPEvent.SEND_INVITE, this.user, "");
                         break;
                     case ACCEPT :  
                         SIPHandler.processNextEvent(SIPEvent.SEND_TRO);
@@ -63,18 +64,10 @@ public class InputHandler extends Thread {
                         break;
                     case HANGUP : SIPHandler.processNextEvent(SIPEvent.SEND_BYE); break;
                     case "H" : SIPHandler.processNextEvent(SIPEvent.SEND_BYE); break;
-                    /** For testing **/
-                    case "INV" : 
-                        System.out.println("sending more invites");
-                        SIPHandler.sendInv();
-                        break;
-                    /** For testing **/
-                    case "TRO" : 
-                        SIPHandler.processNextEvent(SIPEvent.TRO);
-                        break;
-                    case "NOW" : System.out.println("Now in state: " + SIPHandler.getCurrentState()); break;
                     
                     
+                    /** For testing **/
+                    case NOW : System.out.println("Now in state: " + SIPHandler.getCurrentState()); break;
                     
                     /*** Faulty commands ***/
                     case CURCON : 
@@ -89,12 +82,12 @@ public class InputHandler extends Thread {
                         break;
                     
                     case NEWCON : 
-                        initSocket(received);
                         s = received[3].trim().toUpperCase();
                         iterations = 1;
                         if (received.length > 4)
                             iterations = Integer.parseInt(received[4].trim());
                         for (int i = 0; i < iterations; i++) {
+                            initSocket(received);
                             this.user.getOut().println(s);
                             this.user.getOut().flush();
                         }
@@ -106,14 +99,19 @@ public class InputHandler extends Thread {
                             SIPHandler.processNextEvent(SIPEvent.SEND_INVITE, this.user);
                         break;
                     case ACCEPTE : 
-//                        initSocket(received);
                         for (int i = 0; i < Integer.parseInt(received[1].trim()); i++)
                             SIPHandler.processNextEvent(SIPEvent.SEND_TRO);
                         break;
                     case HANGUPE : 
-//                        initSocket(received);
                         for (int i = 0; i < Integer.parseInt(received[1].trim()); i++)
                             SIPHandler.processNextEvent(SIPEvent.SEND_BYE);
+                        break;
+                    case FAULTY : 
+                        System.out.println("CURCON  [String, nrOfMessages] (does not change this state)");
+                        System.out.println("NEWCON  [Address, Port, String, NrOfMessages] (does not change this state)");
+                        System.out.println("CALLE   [Address, Port, NrOfMessages]");
+                        System.out.println("ACCEPTE [NrOfMessages]");
+                        System.out.println("HANGUPE [NrOfMessages]");
                         break;
                     default : 
                         System.out.println("Not a valid command\n"
@@ -122,16 +120,15 @@ public class InputHandler extends Thread {
             } catch (UnknownHostException ex) {
                 System.out.println("Cannot find host: " + ipString);
             } catch (IOException ex) {
-                ex.printStackTrace();
+                System.out.println("Could not create a connection");
             } catch (ArrayIndexOutOfBoundsException ex) {
                 System.out.println("Too few arguments");
             } catch (NumberFormatException ex) {
                 System.out.println("Cannot convert letters to numbers");
             } catch (NullPointerException ex) {
                 System.out.println("No connection exists");
-                ex.printStackTrace();
             }
-        } 
+        }
     }
     
     private void initSocket(String[] received) throws UnknownHostException, IOException {

@@ -23,28 +23,26 @@ import java.util.logging.Logger;
 public class Idle extends SIPState {
 
     public Idle() {
-
+        super();
     }
     
     public SIPState inviting(User user) {
         this.user = user;
-        sendDataPrimary(SIPEvent.INVITE);
+        
         System.out.println("Sending INVITE, waiting for TRO");
         user.setIsConnected(true);
+        sendDataPrimary(SIPEvent.INVITE);
         return new IsInviting(user);
     }
     
     public SIPState invited(User user) {
         this.user = user;
         System.out.println("Incoming call, type accept to answer");
-//        SIPHandler.setOut(out);
-//        sendDataPrimary(SIPEvent.TRO);
-//        System.out.println("Received INVITE, sending TRO");
         user.setIsConnected(true);
         return new WasInvited(user);
     }
 
     public void printState() {
-        System.out.println("You are now in an idle state...");
+        System.out.println("You are now in an Idle state...");
     }
 }

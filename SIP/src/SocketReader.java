@@ -6,7 +6,6 @@ import java.net.InetAddress;
 import java.net.Socket;
 import java.net.SocketException;
 import java.net.SocketTimeoutException;
-import java.util.Timer;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -32,17 +31,18 @@ public class SocketReader extends Thread {
         this.setName("Socket Reader: " + this.getId());
     }
     
-
-    
     @Override
     public void run() {
         if (this.u.getIn() != null && this.u.getOut() != null) {
             String str = "";
-            SIPEvent event;
             try {
                 while (u.getIsConnected()) { //this.u.getOut() != null) {
                     System.out.println("SR waiting for string...");
                     str = u.getIn().readLine();
+                    try { // Simulate network delay
+                        Thread.sleep(10);
+                    } catch (InterruptedException ex) {
+                    }
                     String[] received = str.split(" ");
                     String command = received[0].trim().toUpperCase();
 //                    System.out.println("gotstr: " + str + " id " +u.getId() + " local : " + this.lUser.getAudioPort() + " "  );
@@ -64,8 +64,6 @@ public class SocketReader extends Thread {
                         case "BYE" : SIPHandler.processNextEvent(SIPEvent.BYE, u);break;
                         case "OK" : SIPHandler.processNextEvent(SIPEvent.OK, u);break;
                         case "BUSY" : SIPHandler.processNextEvent(SIPEvent.BUSY, u);break;
-                        default :
-                            // close connection
                     }
                 }
 
@@ -80,8 +78,8 @@ public class SocketReader extends Thread {
             } catch (IOException ex) {
                 System.out.println("Client handler run method");
             }  finally {
-                //TODO: make sure state is idle
-                SIPHandler.processNextEvent(SIPEvent.LOST_CONNECTION, u);
+                // make sure state is idle
+                SIPHandler.processNextEvent(SIPEvent.MAKE_SURE_IDLE, u);
                 try {
                     System.out.println("Removing client");
                     if (socket != null) {

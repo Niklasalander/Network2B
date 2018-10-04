@@ -13,10 +13,6 @@ import java.io.PrintWriter;
  */
 public class Exiting extends CanTimeout {
     
-//    public Exiting(){
-//        
-//    }
-    
     public Exiting(User user) {
         super(user);
     }
@@ -24,17 +20,17 @@ public class Exiting extends CanTimeout {
     public SIPState gotOK(User user) {
         if (isSameUser(user)) {
             cancelTimer();
-            if (user != null) {
-                user.stopAudioStream();
-                user.closeAudioStream();
-            }
             user.endConnection();
             return new Idle();
         }
         else {
-            sendBusyAndCloseWriter(user);
+            sendBusyAndDisconnectUser(user);
             return this;
         }
+    }
+    
+    public void printState() {
+        System.out.println("You are now in the Exiting state...");
     }
     
 }
