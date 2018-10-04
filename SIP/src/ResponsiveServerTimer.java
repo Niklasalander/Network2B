@@ -12,8 +12,8 @@ import java.util.TimerTask;
  * @author fno
  */
 public class ResponsiveServerTimer extends TimerTask{
-    private RemoteUser u;
-    public ResponsiveServerTimer(RemoteUser user){
+    private User u;
+    public ResponsiveServerTimer(User user){
         this.u = user;
     }
     @Override

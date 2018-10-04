@@ -1,4 +1,7 @@
 
+import java.io.IOException;
+
+
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -14,41 +17,45 @@ public class IsInviting extends CanTimeout {
 //    public IsInviting() {
 //    }
 
-    public IsInviting(RemoteUser user) {
-        super(user, 5000);
+    public IsInviting(User user) {
+        super(user);
     }
 
-    public SIPState gotTRO(RemoteUser user) {
-        System.out.println("this method");
+    public SIPState gotTRO(User user) {
         if (isSameUser(user)) {
-            cancelTimer();
-            System.out.println("IN GOT TRO " + user.getLocalUser().getAddress());
-            sendDataWithIntegers(SIPEvent.ACK,user.getLocalUsersPort(),user.getLocalUser().getAddress().getHostName());
-            System.out.println("Got TRO now we send ACK...");
-            return new InCall(user);
+            try {
+                cancelTimer();
+                int localAudioPort = user.initAudioStream();
+//                System.out.println("localport: " + user.getLocalPort() + " localaddress: " + user.getLocalAddress().getHostName());
+                sendDataWithIntegers(SIPEvent.ACK, localAudioPort, user.getLocalAddress().getHostName());
+                System.out.println("Got TRO now we send ACK...");
+                return new InCall(user);
+            } catch (IOException ex) {
+                ex.printStackTrace();
+                return new Idle();
+            }
         } 
         else {
-            sendBusyAndCloseWriter(user);
+            sendBusyAndDisconnectUser(user);
             return (this);
         }
     }
     
-    public SIPState gotBUSY(RemoteUser user) {
+    public SIPState gotBUSY(User user) {
         if (isSameUser(user)) {
             cancelTimer();
             if (user != null) {
                 user.endConnection();
-//                user.getOut().close();
             }
             return new Idle();
         }
         else {
-            sendBusyAndCloseWriter(user);
+            sendBusyAndDisconnectUser(user);
             return this;
         }
     }
 
     public void printState() {
-        System.out.println("You are now in inviting state...");
+        System.out.println("You are now in IsInviting state...");
     }
 }
