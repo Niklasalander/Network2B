@@ -151,5 +151,10 @@ public class User {
     public int getLocalAudioPort() {
         return localAudioPort;
     }
+
+    public int getRemotePort() {
+        return remotePort;
+    }
+    
     
 }

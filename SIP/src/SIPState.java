@@ -14,13 +14,13 @@ public abstract class SIPState {
     protected static User user;
 
     public SIPState() {
-        
+
     }
-    
+
     public SIPState(User user) {
         this.user = user;
     }
-    
+
     public SIPState inviting(User user) {
         return this;
     }
@@ -44,30 +44,31 @@ public abstract class SIPState {
     public SIPState gotBYE(User user) {
         return this;
     }
-    
+
     public SIPState gotBUSY(User user) {
         return this;
     }
-    
+
     public SIPState sendBYE() {
         return this;
     }
-    
+
     public SIPState sendTRO() {
         return this;
     }
-      public SIPState sendTRO(User user) {
-          return this;
-      }
-    
+
+    public SIPState sendTRO(User user) {
+        return this;
+    }
+
     public SIPState lostConnection(User user) {
         return this;
     }
-    
+
     public SIPState timeoutReached(User user) {
         return this;
     }
-    
+
     public SIPState makeSureIdle(User user) {
         return this;
     }
@@ -76,24 +77,22 @@ public abstract class SIPState {
         System.out.println("current state : " + this.getClass().getSimpleName());
     }
 
-    
-     public String returnStates() {
+    public String returnStates() {
         return "current state : " + this.getClass().getSimpleName().toString();
     }
-     
+
     protected boolean isSameUser(User otherUser) {
 //        System.out.println("This  user id: " + this.user.getId());
 //        System.out.println("Other user id: " + otherUser.getId());
         if (user.getId() == otherUser.getId()) {
 //            System.out.println("It is the same user");
             return true;
-        }
-        else {
+        } else {
 //            System.out.println("Not the same user");
             return false;
         }
     }
-     
+
     protected void sendDataPrimary(SIPEvent event) {
         try {
             user.getOut().println(event);
@@ -103,7 +102,8 @@ public abstract class SIPState {
             ex.printStackTrace();
         }
     }
-     protected void sendDataWithInteger(SIPEvent event, int number) {
+
+    protected void sendDataWithInteger(SIPEvent event, int number) {
         try {
             String s = String.valueOf(number);
             user.getOut().println(event + " " + s);
@@ -112,15 +112,27 @@ public abstract class SIPState {
             System.out.println("SIPState could not send data");
             ex.printStackTrace();
         }
-    } 
-       protected void sendDataWithIntegers(SIPEvent event, int number,String ipAddress) {
+    }
+
+    protected void sendDataWithIntegers(SIPEvent event, int number, String ipAddress) {
         try {
-           
+
             user.getOut().println(event + " " + number + " " + ipAddress);
             user.getOut().flush();
         } catch (Exception ex) {
             System.out.println("SIPState could not send data");
             ex.printStackTrace();
         }
-    } 
+    }
+
+    
+    public void faultySendAny(String s) {
+        System.out.println("SIPState sending string: " + s);
+        if (user != null) {
+            if (user.getOut() != null) {
+                user.getOut().println(s);
+                user.getOut().flush();
+            }
+        }
+    }
 }

@@ -72,4 +72,8 @@ public class SIPHandler extends Thread {
     public static String getCurrentState() {
         return currentState.getClass().getSimpleName();
     }
+    
+    public static void faultySendAny(String s) {
+        currentState.faultySendAny(s);
+    }
 }

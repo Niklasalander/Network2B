@@ -53,6 +53,10 @@ public class InputHandler extends Thread {
                     case EXIT : SIPHandler.processNextEvent(SIPEvent.SEND_BYE); NetworkServer.killme(); break;
                     case E : SIPHandler.processNextEvent(SIPEvent.SEND_BYE); NetworkServer.killme(); break;
                     case CALL : 
+                        if (received[1].trim().toUpperCase().equals(localAddress.getHostName().toUpperCase()) && Integer.parseInt(received[2].trim()) == localPort) {
+                            System.out.println("You cannot call yourself...");
+                            break;
+                        }
                         initSocket(received);
                         SIPHandler.processNextEvent(SIPEvent.SEND_INVITE, this.user, "");
                         break;
@@ -76,8 +80,7 @@ public class InputHandler extends Thread {
                         if (received.length > 2)
                             iterations = Integer.parseInt(received[2].trim());
                         for (int i = 0; i < iterations; i++) {
-                            this.user.getOut().println(s);
-                            this.user.getOut().flush();
+                            SIPHandler.faultySendAny(s);
                         }
                         break;
                     
@@ -119,6 +122,7 @@ public class InputHandler extends Thread {
                 }
             } catch (UnknownHostException ex) {
                 System.out.println("Cannot find host: " + ipString);
+                ex.printStackTrace();
             } catch (IOException ex) {
                 System.out.println("Could not create a connection");
             } catch (ArrayIndexOutOfBoundsException ex) {

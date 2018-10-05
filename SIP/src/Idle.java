@@ -27,12 +27,19 @@ public class Idle extends SIPState {
     }
     
     public SIPState inviting(User user) {
-        this.user = user;
-        
-        System.out.println("Sending INVITE, waiting for TRO");
-        user.setIsConnected(true);
-        sendDataPrimary(SIPEvent.INVITE);
-        return new IsInviting(user);
+//        if (user.getLocalAddress().getHostName() == user.getRemoteAddress().getHostName() &&
+//                user.getLocalPort() == user.getRemotePort()) {
+//            System.out.println("Cannnot call yourself....");
+//            user.endConnection();
+//            return new Idle();
+//        }
+//        else {
+            this.user = user;
+            System.out.println("Sending INVITE, waiting for TRO");
+            user.setIsConnected(true);
+            sendDataPrimary(SIPEvent.INVITE);
+            return new IsInviting(user);
+//        }
     }
     
     public SIPState invited(User user) {

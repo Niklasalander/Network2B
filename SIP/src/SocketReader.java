@@ -36,34 +36,40 @@ public class SocketReader extends Thread {
         if (this.u.getIn() != null && this.u.getOut() != null) {
             String str = "";
             try {
-                while (u.getIsConnected()) { //this.u.getOut() != null) {
-                    System.out.println("SR waiting for string...");
-                    str = u.getIn().readLine();
-                    try { // Simulate network delay
-                        Thread.sleep(10);
-                    } catch (InterruptedException ex) {
-                    }
-                    String[] received = str.split(" ");
-                    String command = received[0].trim().toUpperCase();
-//                    System.out.println("gotstr: " + str + " id " +u.getId() + " local : " + this.lUser.getAudioPort() + " "  );
-                    switch(command) {
-                        case "SEND_INVITE" : SIPHandler.processNextEvent(SIPEvent.SEND_INVITE, u);break;
-                        case "INVITE" : 
-                            SIPHandler.processNextEvent(SIPEvent.INVITE, u);
-                          
-                        break;
-                        case "TRO" : 
-                            u.setRemoteAudioPort(Integer.parseInt(received[1]));
-                            SIPHandler.processNextEvent(SIPEvent.TRO, u);
+                while (u.getIsConnected() && u.getIn() != null) {
+                    try {
+                        System.out.println("SR waiting for string...");
+                        str = u.getIn().readLine();
+                        try { // Simulate network delay
+                            Thread.sleep(10);
+                        } catch (InterruptedException ex) {
+                        }
+                        String[] received = str.split(" ");
+                        String command = received[0].trim().toUpperCase();
+    //                    System.out.println("gotstr: " + str + " id " +u.getId() + " local : " + this.lUser.getAudioPort() + " "  );
+                        switch(command) {
+                            case "SEND_INVITE" : SIPHandler.processNextEvent(SIPEvent.SEND_INVITE, u);break;
+                            case "INVITE" : 
+                                SIPHandler.processNextEvent(SIPEvent.INVITE, u);
+
                             break;
-                        case "ACK" : 
-                            u.setRemoteAudioPort(Integer.parseInt(received[1]));
-                            u.setRemoteAddress(InetAddress.getByName(received[2].trim()));
-                            SIPHandler.processNextEvent(SIPEvent.ACK, u);
-                            break;
-                        case "BYE" : SIPHandler.processNextEvent(SIPEvent.BYE, u);break;
-                        case "OK" : SIPHandler.processNextEvent(SIPEvent.OK, u);break;
-                        case "BUSY" : SIPHandler.processNextEvent(SIPEvent.BUSY, u);break;
+                            case "TRO" : 
+                                u.setRemoteAudioPort(Integer.parseInt(received[1]));
+                                SIPHandler.processNextEvent(SIPEvent.TRO, u);
+                                break;
+                            case "ACK" : 
+                                u.setRemoteAudioPort(Integer.parseInt(received[1]));
+                                u.setRemoteAddress(InetAddress.getByName(received[2].trim()));
+                                SIPHandler.processNextEvent(SIPEvent.ACK, u);
+                                break;
+                            case "BYE" : SIPHandler.processNextEvent(SIPEvent.BYE, u);break;
+                            case "OK" : SIPHandler.processNextEvent(SIPEvent.OK, u);break;
+                            case "BUSY" : SIPHandler.processNextEvent(SIPEvent.BUSY, u);break;
+                        }
+                    } catch (ArrayIndexOutOfBoundsException ex) {
+                        System.out.println("Could not parse arguments");
+                    } catch (NullPointerException ex) {
+                        
                     }
                 }
 
