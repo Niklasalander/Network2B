@@ -61,12 +61,14 @@ public class SIPHandler extends Thread {
         System.out.print("Printing current state: ");currentState.printState();
     }
     
-    public static void processNextEvent (SIPEvent event, User user, String str) {
-        System.out.println("In next event " + currentState.returnStates() + " "  +event);
-        switch(event){
-            case SEND_INVITE : currentState= currentState.inviting(user);break; // caller
+    public static void processNextEvent (SIPEvent event, User user, InputHandler ih) {
+        if (ih != null) {
+            System.out.println("In next event " + currentState.returnStates() + " "  +event);
+            switch(event){
+                case SEND_INVITE : currentState= currentState.inviting(user);break; // caller
+            }
+            System.out.print("Printing current state: ");currentState.printState();
         }
-        System.out.print("Printing current state: ");currentState.printState();
     }
     
     public static String getCurrentState() {

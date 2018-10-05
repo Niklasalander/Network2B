@@ -34,12 +34,23 @@ public class SocketReader extends Thread {
     @Override
     public void run() {
         if (this.u.getIn() != null && this.u.getOut() != null) {
+            int counter = 0;
             String str = "";
             try {
-                while (u.getIsConnected() && u.getIn() != null) {
+                while (u.getIsConnected()) {
                     try {
                         System.out.println("SR waiting for string...");
                         str = u.getIn().readLine();
+                        if (str == null) {
+                            counter++;
+                            if (counter == 10) {
+                                System.out.println("Connection was lost");
+                                u.endConnection();
+                            }
+                        }
+                        else
+                            counter = 0;
+                        
                         try { // Simulate network delay
                             Thread.sleep(10);
                         } catch (InterruptedException ex) {
@@ -47,6 +58,7 @@ public class SocketReader extends Thread {
                         String[] received = str.split(" ");
                         String command = received[0].trim().toUpperCase();
     //                    System.out.println("gotstr: " + str + " id " +u.getId() + " local : " + this.lUser.getAudioPort() + " "  );
+
                         switch(command) {
                             case "SEND_INVITE" : SIPHandler.processNextEvent(SIPEvent.SEND_INVITE, u);break;
                             case "INVITE" : 
@@ -65,6 +77,7 @@ public class SocketReader extends Thread {
                             case "BYE" : SIPHandler.processNextEvent(SIPEvent.BYE, u);break;
                             case "OK" : SIPHandler.processNextEvent(SIPEvent.OK, u);break;
                             case "BUSY" : SIPHandler.processNextEvent(SIPEvent.BUSY, u);break;
+                            default : throw new NullPointerException();
                         }
                     } catch (ArrayIndexOutOfBoundsException ex) {
                         System.out.println("Could not parse arguments");
@@ -88,14 +101,14 @@ public class SocketReader extends Thread {
                 SIPHandler.processNextEvent(SIPEvent.MAKE_SURE_IDLE, u);
                 try {
                     System.out.println("Removing client");
-                    if (socket != null) {
-                        socket.close();
-                    }
                     if (in != null) {
                         in.close();
                     }
                     if (out != null) {
                         out.close();
+                    }
+                    if (socket != null) {
+                        socket.close();
                     }
                 } catch (IOException ex) {
                     System.out.println("could not close in stream in client handler");
@@ -108,14 +121,14 @@ public class SocketReader extends Thread {
         else {
             try {
                 System.out.println("Removing client");
-                if (socket != null) {
-                    socket.close();
-                }
                 if (in != null) {
                     in.close();
                 }
                 if (out != null) {
                     out.close();
+                }
+                if (socket != null) {
+                    socket.close();
                 }
             } catch (IOException ex) {
                 System.out.println("could not close in stream in client handler");

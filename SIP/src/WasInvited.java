@@ -1,8 +1,5 @@
 
 import java.io.IOException;
-import java.util.Timer;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -14,9 +11,6 @@ import java.util.logging.Logger;
  * @author fno
  */
 public class WasInvited extends CanTimeout {
-//    public WasInvited() {
-//        System.out.println("was invited");
-//    }
 
     public WasInvited(User user) {
         super(user);

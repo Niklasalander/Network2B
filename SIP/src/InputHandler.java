@@ -58,7 +58,7 @@ public class InputHandler extends Thread {
                             break;
                         }
                         initSocket(received);
-                        SIPHandler.processNextEvent(SIPEvent.SEND_INVITE, this.user, "");
+                        SIPHandler.processNextEvent(SIPEvent.SEND_INVITE, this.user, this);
                         break;
                     case ACCEPT :  
                         SIPHandler.processNextEvent(SIPEvent.SEND_TRO);
@@ -99,7 +99,7 @@ public class InputHandler extends Thread {
                     case CALLE : 
                         initSocket(received);
                         for (int i = 0; i < Integer.parseInt(received[3].trim()); i++)
-                            SIPHandler.processNextEvent(SIPEvent.SEND_INVITE, this.user);
+                            SIPHandler.processNextEvent(SIPEvent.SEND_INVITE, this.user, this);
                         break;
                     case ACCEPTE : 
                         for (int i = 0; i < Integer.parseInt(received[1].trim()); i++)
