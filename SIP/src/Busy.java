@@ -26,7 +26,6 @@ public abstract class Busy extends SIPState {
     public SIPState invited(User user) {
         System.out.println("This node is busy, can't be invited");
         if (isSameUser(user)) {
-            // do something(?)
         }
         else {
             sendBusyAndDisconnectUser(user);
@@ -38,7 +37,6 @@ public abstract class Busy extends SIPState {
     public SIPState gotTRO(User user) {
         System.out.println("This node is busy, can't receive T.R.O");
         if (isSameUser(user)) {
-            // do something(?)
         }
         else {
             sendBusyAndDisconnectUser(user);
@@ -50,7 +48,6 @@ public abstract class Busy extends SIPState {
     public SIPState gotACK(User user) {
         System.out.println("This node is busy, can't receive ACK");
         if (isSameUser(user)) {
-            // do something(?)
         }
         else {
             sendBusyAndDisconnectUser(user);
@@ -98,7 +95,7 @@ public abstract class Busy extends SIPState {
     
     public SIPState makeSureIdle(User user) {
         if (isSameUser(user)) {
-            System.out.println("Making sure we state machine doesn't get stuck outside of Idle");
+            System.out.println("Making sure this state machine doesn't get stuck outside of Idle");
             user.endConnection();
             return new Idle();
         }

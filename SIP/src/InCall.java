@@ -20,8 +20,6 @@ public class InCall extends Busy {
         super(user);
         
         try {
-//            System.out.println("I am user " + user.getLocalAudioPort() + " Address: " + user.getLocalAddress().getHostName() + " " +
-//                    " and will connect with " + +user.getRemoteAudioPort() + "Address " + user.getRemoteAddress().getHostName() + " " );
             user.connectAudioStream();
             user.startAudioStream();
         } catch (IOException ex) {
@@ -33,6 +31,5 @@ public class InCall extends Busy {
     public void printState() {
         System.out.println("You are now in the InCall state...");
     }
-
     
 }

@@ -14,12 +14,10 @@ public class WasInvited extends CanTimeout {
 
     public WasInvited(User user) {
         super(user);
-        System.out.println("Created new WasInvited");
     }
 
     public SIPState gotACK(User user) {
         if (isSameUser(user)) {
-            // Start audio stream
             System.out.println("Got ACK going to InCall... ");
             cancelTimer();
             return new InCall(user);
@@ -37,7 +35,6 @@ public class WasInvited extends CanTimeout {
         try {
             cancelTimer();
             int localAudioPort = user.initAudioStream();
-            System.out.println("audio port: " + localAudioPort);
             sendDataWithInteger(SIPEvent.TRO, localAudioPort);
             return new WasInvited(this.user);
         } catch (IOException ex) {
@@ -73,7 +70,5 @@ public class WasInvited extends CanTimeout {
     public void printState() {
         System.out.println("You are now in the 'Was Invited' state...");
     }
-    
-  
     
 }

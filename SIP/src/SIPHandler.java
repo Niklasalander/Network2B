@@ -12,10 +12,6 @@ import java.io.PrintWriter;
  * @author fno
  */
 public class SIPHandler extends Thread {
-//    protected Socket socket;
-//    protected BufferedReader in;
-//    protected static PrintWriter out;
-    
     private static SIPState currentState = new Idle();
     private static PrintWriter out;
     public SIPHandler(){};

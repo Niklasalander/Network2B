@@ -1,16 +1,4 @@
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.ObjectOutputStream;
-import java.io.OutputStreamWriter;
-import java.io.PrintWriter;
-import java.net.InetAddress;
-import java.net.Socket;
-import java.util.Timer;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
@@ -27,19 +15,11 @@ public class Idle extends SIPState {
     }
     
     public SIPState inviting(User user) {
-//        if (user.getLocalAddress().getHostName() == user.getRemoteAddress().getHostName() &&
-//                user.getLocalPort() == user.getRemotePort()) {
-//            System.out.println("Cannnot call yourself....");
-//            user.endConnection();
-//            return new Idle();
-//        }
-//        else {
-            this.user = user;
-            System.out.println("Sending INVITE, waiting for TRO");
-            user.setIsConnected(true);
-            sendDataPrimary(SIPEvent.INVITE);
-            return new IsInviting(user);
-//        }
+        this.user = user;
+        System.out.println("Sending INVITE, waiting for TRO");
+        user.setIsConnected(true);
+        sendDataPrimary(SIPEvent.INVITE);
+        return new IsInviting(user);
     }
     
     public SIPState invited(User user) {

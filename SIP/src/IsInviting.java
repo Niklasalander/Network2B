@@ -14,9 +14,6 @@ import java.io.IOException;
  */
 public class IsInviting extends CanTimeout {
 
-//    public IsInviting() {
-//    }
-
     public IsInviting(User user) {
         super(user);
     }
@@ -26,12 +23,10 @@ public class IsInviting extends CanTimeout {
             try {
                 cancelTimer();
                 int localAudioPort = user.initAudioStream();
-//                System.out.println("localport: " + user.getLocalPort() + " localaddress: " + user.getLocalAddress().getHostName());
                 sendDataWithIntegers(SIPEvent.ACK, localAudioPort, user.getLocalAddress().getHostName());
                 System.out.println("Got TRO now we send ACK...");
                 return new InCall(user);
             } catch (IOException ex) {
-                ex.printStackTrace();
                 return new Idle();
             }
         } 

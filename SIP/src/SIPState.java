@@ -82,13 +82,9 @@ public abstract class SIPState {
     }
 
     protected boolean isSameUser(User otherUser) {
-//        System.out.println("This  user id: " + this.user.getId());
-//        System.out.println("Other user id: " + otherUser.getId());
         if (user.getId() == otherUser.getId()) {
-//            System.out.println("It is the same user");
             return true;
         } else {
-//            System.out.println("Not the same user");
             return false;
         }
     }
@@ -99,7 +95,6 @@ public abstract class SIPState {
             user.getOut().flush();
         } catch (Exception ex) {
             System.out.println("SIPState could not send data");
-            ex.printStackTrace();
         }
     }
 
@@ -110,18 +105,15 @@ public abstract class SIPState {
             user.getOut().flush();
         } catch (Exception ex) {
             System.out.println("SIPState could not send data");
-            ex.printStackTrace();
         }
     }
 
     protected void sendDataWithIntegers(SIPEvent event, int number, String ipAddress) {
         try {
-
             user.getOut().println(event + " " + number + " " + ipAddress);
             user.getOut().flush();
         } catch (Exception ex) {
             System.out.println("SIPState could not send data");
-            ex.printStackTrace();
         }
     }
 

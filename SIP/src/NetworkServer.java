@@ -67,24 +67,20 @@ public class NetworkServer {
             }
         } catch (IOException ex) {
             System.out.println("Main exiting");
-//            ex.printStackTrace();
         } finally {
                 try {
                     if (ss != null) 
                         ss.close();
             } catch (IOException ex) {
-                ex.printStackTrace();
             }
         }
     }
 
     public static void killme() {
-        
         try {
             if (ss != null) 
                 ss.close();
         } catch (IOException ex) {
-            ex.printStackTrace();
         }
     }
     
@@ -94,7 +90,6 @@ public class NetworkServer {
             User user = new User(socketInstance, localAddress, localPort);
             beginSocketReaderIfIdle(user);
         } catch (IOException ex) {
-            ex.printStackTrace();
         }
     }
     
@@ -111,7 +106,6 @@ public class NetworkServer {
                 beginSocketReader(user);
         } catch (Exception ex) {
             user.setIsConnected(false);
-            ex.printStackTrace();
         }
     }
     
