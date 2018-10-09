@@ -22,55 +22,68 @@ public abstract class SIPState {
     }
 
     public SIPState inviting(User user) {
-        return this;
+        sendDataPrimary(SIPEvent.BYE);
+        return new Idle();
     }
 
     public SIPState invited(User user) {
-        return this;
+         sendDataPrimary(SIPEvent.BYE);
+        return new Idle();
     }
 
     public SIPState gotTRO(User user) {
-        return this;
+         sendDataPrimary(SIPEvent.BYE);
+        return new Idle();
     }
 
     public SIPState gotACK(User user) {
-        return this;
+         sendDataPrimary(SIPEvent.BYE);
+        return new Idle();
     }
 
     public SIPState gotOK(User user) {
-        return this;
+        sendDataPrimary(SIPEvent.BYE);
+        return new Idle();
     }
 
     public SIPState gotBYE(User user) {
-        return this;
+        sendDataPrimary(SIPEvent.BYE);
+        return new Idle();
     }
 
     public SIPState gotBUSY(User user) {
-        return this;
+         sendDataPrimary(SIPEvent.BYE);
+        return new Idle();
     }
 
     public SIPState sendBYE() {
-        return this;
+         sendDataPrimary(SIPEvent.BYE);
+        return new Idle();
     }
 
     public SIPState sendTRO() {
-        return this;
+        sendDataPrimary(SIPEvent.BYE);
+        return new Idle();
     }
 
     public SIPState sendTRO(User user) {
-        return this;
+         sendDataPrimary(SIPEvent.BYE);
+        return new Idle();
     }
 
     public SIPState lostConnection(User user) {
-        return this;
+        sendDataPrimary(SIPEvent.BYE);
+        return new Idle();
     }
 
     public SIPState timeoutReached(User user) {
-        return this;
+         sendDataPrimary(SIPEvent.BYE);
+        return new Idle();
     }
 
     public SIPState makeSureIdle(User user) {
-        return this;
+         sendDataPrimary(SIPEvent.BYE);
+        return new Idle();
     }
 
     public void printState() {

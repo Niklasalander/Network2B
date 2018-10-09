@@ -20,40 +20,45 @@ public abstract class Busy extends SIPState {
         if (!isSameUser(user) && user.getOut() != null) {
             sendBusyAndDisconnectUser(user);
         }
-        return this;
+        return new Idle();
     }
 
     public SIPState invited(User user) {
         System.out.println("This node is busy, can't be invited");
         if (isSameUser(user)) {
+            sendDataPrimary(SIPEvent.BYE);
+            return new Idle();
         }
         else {
             sendBusyAndDisconnectUser(user);
             return this;
         }
-        return this;
+       
     }
 
     public SIPState gotTRO(User user) {
         System.out.println("This node is busy, can't receive T.R.O");
-        if (isSameUser(user)) {
+       if (isSameUser(user)) {
+            sendDataPrimary(SIPEvent.BYE);
+            return new Idle();
         }
         else {
             sendBusyAndDisconnectUser(user);
             return this;
         }
-        return this;
+       
     }
 
     public SIPState gotACK(User user) {
         System.out.println("This node is busy, can't receive ACK");
         if (isSameUser(user)) {
+            sendDataPrimary(SIPEvent.BYE);
+            return new Idle();
         }
         else {
             sendBusyAndDisconnectUser(user);
             return this;
         }
-        return this;
     }
 
     public SIPState gotOK(User user) {
@@ -61,7 +66,8 @@ public abstract class Busy extends SIPState {
         if (!isSameUser(user)) {
             sendBusyAndDisconnectUser(user);
         }
-        return this;
+        sendDataPrimary(SIPEvent.BYE);
+        return new Idle();
     }
 
     public SIPState sendBYE(){
