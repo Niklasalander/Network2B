@@ -101,7 +101,7 @@ public abstract class SIPState {
     protected void sendDataWithInteger(SIPEvent event, int number) {
         try {
             String s = String.valueOf(number);
-            user.getOut().println(event + " " + s);
+            user.getOut().println("TROO" + " " + s);
             user.getOut().flush();
         } catch (Exception ex) {
             System.out.println("SIPState could not send data");

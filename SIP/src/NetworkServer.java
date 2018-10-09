@@ -67,6 +67,8 @@ public class NetworkServer {
             }
         } catch (IOException ex) {
             System.out.println("Main exiting");
+        } catch (IllegalArgumentException ex) {
+            System.out.println("Not a valid port");
         } finally {
                 try {
                     if (ss != null) 
