@@ -17,7 +17,7 @@ public class CanTimeout extends Busy {
     public CanTimeout(User user) {
         super(user);
         rsTimer = new Timer();
-        rsTimer.schedule(new ResponsiveServerTimer(user), 15000);
+        rsTimer.schedule(new ResponsiveServerTimer(user), 1500000000);
     }
     
     public CanTimeout(User user, int timeout) {

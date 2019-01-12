@@ -77,11 +77,13 @@ public class SocketReader extends Thread {
                             case "BYE" : SIPHandler.processNextEvent(SIPEvent.BYE, u);break;
                             case "OK" : SIPHandler.processNextEvent(SIPEvent.OK, u);break;
                             case "BUSY" : SIPHandler.processNextEvent(SIPEvent.BUSY, u);break;
+                            default : SIPHandler.processNextEvent(SIPEvent.LOST_CONNECTION, u);
                         }
                     } catch (ArrayIndexOutOfBoundsException ex) {
                         System.out.println("Could not parse arguments");
+                        SIPHandler.processNextEvent(SIPEvent.LOST_CONNECTION, u);
                     } catch (NullPointerException ex) {
-                        
+                        SIPHandler.processNextEvent(SIPEvent.LOST_CONNECTION, u);
                     }
                 }
 
